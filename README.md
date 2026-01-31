@@ -2,8 +2,6 @@
 
 A modern GUI application for managing tasks using the Eisenhower Matrix method of prioritization. Features a beautiful GTK4 interface with libadwaita styling and full Flatpak support.
 
-[![Flatpak CI](https://github.com/alex/eisenhower/workflows/Flatpak%20CI/badge.svg)](https://github.com/alex/eisenhower/actions)
-[![Release](https://github.com/alex/eisenhower/workflows/Release/badge.svg)](https://github.com/alex/eisenhower/actions)
 ![GTK4](https://img.shields.io/badge/GTK-4-blue)
 ![Python](https://img.shields.io/badge/Python-3.9+-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
