@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.alesima.eisenhower</id>
+  
+  <name>Eisenhower Matrix</name>
+  <summary>Organize tasks by urgency and importance</summary>
+  
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  
+  <description>
+    <p>
+      Eisenhower Matrix is a task prioritization tool that helps you organize your work 
+      by categorizing tasks into four quadrants based on their urgency and importance.
+    </p>
+    <p>
+      Named after President Dwight D. Eisenhower, this productivity method helps you focus 
+      on what truly matters by distinguishing between tasks that are:
+    </p>
+    <ul>
+      <li>Urgent &amp; Important (Do First) - Critical tasks requiring immediate attention</li>
+      <li>Important, Not Urgent (Schedule) - Long-term goals and strategic planning</li>
+      <li>Urgent, Not Important (Delegate) - Tasks that can be delegated to others</li>
+      <li>Not Urgent, Not Important (Eliminate) - Time-wasters to minimize</li>
+    </ul>
+    <p>Features:</p>
+    <ul>
+      <li>Beautiful, modern GTK4 interface with libadwaita</li>
+      <li>Four-quadrant visual layout for easy task organization</li>
+      <li>Add, complete, move, and delete tasks with ease</li>
+      <li>Persistent storage of your task data</li>
+    </ul>
+  </description>
+  
+  <launchable type="desktop-id">com.github.alesima.eisenhower.desktop</launchable>
+  
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main window showing the four-quadrant matrix</caption>
+    </screenshot>
+  </screenshots>
+  
+  <url type="homepage">https://github.com/alex/eisenhower</url>
+  <url type="bugtracker">https://github.com/alex/eisenhower/issues</url>
+  
+  <developer_name>Alex Silva</developer_name>
+  
+  <releases>
+    <release version="1.0.0" date="2026-01-31">
+      <description>
+        <p>Initial release</p>
+        <ul>
+          <li>GTK4 interface with libadwaita styling</li>
+          <li>Four-quadrant task organization</li>
+          <li>Task management features (add, complete, move, delete)</li>
+          <li>Notes, tags, and metadata support</li>
+          <li>Persistent JSON storage</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  
+  <content_rating type="oars-1.1" />
+  
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
+  
+  <categories>
+    <category>Utility</category>
+    <category>Office</category>
+  </categories>
+  
+  <keywords>
+    <keyword>task</keyword>
+    <keyword>todo</keyword>
+    <keyword>productivity</keyword>
+    <keyword>eisenhower</keyword>
+    <keyword>matrix</keyword>
+    <keyword>priority</keyword>
+    <keyword>time management</keyword>
+  </keywords>
+</component>

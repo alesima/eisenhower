@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Eisenhower Matrix
+GenericName=Task Prioritization
+Comment=Organize tasks by urgency and importance
+Icon=com.github.alesima.eisenhower
+Exec=eisenhower-gui
+Terminal=false
+Categories=GTK;Utility;Office;ProjectManagement;
+Keywords=task;todo;productivity;eisenhower;matrix;priority;
+StartupNotify=true

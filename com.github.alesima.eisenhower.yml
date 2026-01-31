@@ -1,0 +1,21 @@
+app-id: com.github.alesima.eisenhower
+runtime: org.gnome.Platform
+runtime-version: '45'
+sdk: org.gnome.Sdk
+command: eisenhower-gui
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=xdg-data/eisenhower:create
+
+modules:
+  - name: eisenhower-matrix
+    buildsystem: simple
+    build-commands:
+      - pip3 install --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST} .
+    sources:
+      - type: dir
+        path: .

@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+include requirements.txt
+include com.github.alesima.eisenhower.yml
+include com.github.alesima.eisenhower.desktop
+include com.github.alesima.eisenhower.metainfo.xml
+include eisenhower-cli
+include eisenhower-gui
+recursive-include data *.svg
+recursive-include eisenhower_matrix *.py

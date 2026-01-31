@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" version="1.1" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="q1Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="q2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffecd2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fcb69f;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="q3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a8edea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fed6e3;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="q4Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d299c2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fef9d7;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background rounded rectangle -->
+  <rect x="8" y="8" width="112" height="112" rx="24" ry="24" fill="url(#bgGradient)" opacity="0.95"/>
+  
+  <!-- Main grid container -->
+  <g transform="translate(20, 20)">
+    <!-- Quadrant 1: Urgent & Important (Top Left) - Red/Pink -->
+    <rect x="0" y="0" width="38" height="38" rx="6" ry="6" 
+          fill="url(#q1Gradient)" filter="url(#shadow)" opacity="0.9"/>
+    <text x="19" y="23" font-family="sans-serif" font-size="20" font-weight="bold" 
+          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#c0392b; stroke-width:2px;">1</text>
+    
+    <!-- Quadrant 2: Important, Not Urgent (Top Right) - Orange/Yellow -->
+    <rect x="50" y="0" width="38" height="38" rx="6" ry="6" 
+          fill="url(#q2Gradient)" filter="url(#shadow)" opacity="0.9"/>
+    <text x="69" y="23" font-family="sans-serif" font-size="20" font-weight="bold" 
+          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#d68910; stroke-width:2px;">2</text>
+    
+    <!-- Quadrant 3: Urgent, Not Important (Bottom Left) - Cyan/Blue -->
+    <rect x="0" y="50" width="38" height="38" rx="6" ry="6" 
+          fill="url(#q3Gradient)" filter="url(#shadow)" opacity="0.9"/>
+    <text x="19" y="73" font-family="sans-serif" font-size="20" font-weight="bold" 
+          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#1a7da1; stroke-width:2px;">3</text>
+    
+    <!-- Quadrant 4: Not Urgent, Not Important (Bottom Right) - Purple/Pastel -->
+    <rect x="50" y="50" width="38" height="38" rx="6" ry="6" 
+          fill="url(#q4Gradient)" filter="url(#shadow)" opacity="0.9"/>
+    <text x="69" y="73" font-family="sans-serif" font-size="20" font-weight="bold" 
+          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#7d3c98; stroke-width:2px;">4</text>
+    
+    <!-- Central cross/divider lines -->
+    <line x1="44" y1="6" x2="44" y2="82" stroke="white" stroke-width="3" opacity="0.8" stroke-linecap="round"/>
+    <line x1="6" y1="44" x2="82" y2="44" stroke="white" stroke-width="3" opacity="0.8" stroke-linecap="round"/>
+    
+    <!-- Corner accent dots -->
+    <circle cx="44" cy="44" r="4" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="110" cy="25" r="3" fill="white" opacity="0.4"/>
+  <circle cx="100" cy="105" r="2.5" fill="white" opacity="0.3"/>
+  <circle cx="25" cy="108" r="2" fill="white" opacity="0.3"/>
+</svg>
