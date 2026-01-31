@@ -11,7 +11,9 @@ class ShortcutsWindow(Gtk.ShortcutsWindow):
     def __init__(self, parent):
         super().__init__()
         self.set_transient_for(parent)
-        self.set_modal(True)
+        
+        # Connect close-request signal to properly handle closing
+        self.connect("close-request", self._on_close_request)
         
         section = Gtk.ShortcutsSection()
         section.props.visible = True
@@ -83,3 +85,8 @@ class ShortcutsWindow(Gtk.ShortcutsWindow):
         section.append(nav_group)
         
         self.set_child(section)
+    
+    def _on_close_request(self, window):
+        """Handle close request - destroy window but don't propagate to app"""
+        self.destroy()
+        return True  # Stop signal propagation

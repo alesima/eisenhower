@@ -13,7 +13,7 @@ long_description = (this_directory / "README.md").read_text() if (this_directory
 
 setup(
     name="eisenhower-matrix",
-    version="1.0.0",
+    version="1.0.1",
     description="A GUI tool for task prioritization using the Eisenhower Matrix",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -9,7 +9,7 @@ Hexagonal Architecture (Ports and Adapters):
 SOLID Principles applied throughout.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Alex"
 
 # Export domain abstractions
