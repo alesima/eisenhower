@@ -1,0 +1,118 @@
+name: Flatpak CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  release:
+    types: [ published ]
+
+jobs:
+  flatpak-builder:
+    name: Build Flatpak
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-45
+      options: --privileged
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: eisenhower-matrix.flatpak
+          manifest-path: com.github.alesima.eisenhower.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+          
+      - name: Upload Flatpak bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: eisenhower-matrix-flatpak
+          path: eisenhower-matrix.flatpak
+          retention-days: 30
+
+  lint:
+    name: Lint Python Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install flake8 black
+      
+      - name: Run flake8
+        run: |
+          flake8 eisenhower_matrix/ --max-line-length=120 --extend-ignore=E203,W503
+        continue-on-error: true
+      
+      - name: Check formatting with black
+        run: |
+          black --check eisenhower_matrix/
+        continue-on-error: true
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-gi \
+            gir1.2-gtk-4.0 \
+            gir1.2-adw-1 \
+            libgirepository1.0-dev
+      
+      - name: Install Python dependencies
+        run: |
+          pip install -e ".[dev]"
+      
+      - name: Run tests
+        run: |
+          pytest -v
+        continue-on-error: true
+
+  publish-to-flathub:
+    name: Publish to Flathub
+    needs: flatpak-builder
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download Flatpak bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: eisenhower-matrix-flatpak
+      
+      - name: Prepare for Flathub submission
+        run: |
+          echo "Release published! Next steps:"
+          echo "1. Fork https://github.com/flathub/flathub"
+          echo "2. Create a new repository under your fork: com.github.alesima.eisenhower"
+          echo "3. Copy com.github.alesima.eisenhower.yml to that repository"
+          echo "4. Submit a PR to flathub/flathub"
+          echo ""
+          echo "For automated publishing, set up Flathub token in repository secrets."

@@ -1,0 +1,117 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Extract version from tag
+        id: version
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Create Release Notes
+        id: release_notes
+        run: |
+          cat > release_notes.md << 'EOF'
+          ## Eisenhower Matrix ${{ steps.version.outputs.VERSION }}
+          
+          ### Installation
+          
+          #### Flatpak (Recommended)
+          Download the `.flatpak` bundle from assets below and install:
+          ```bash
+          flatpak install eisenhower-matrix.flatpak
+          flatpak run com.github.alesima.eisenhower
+          ```
+          
+          #### From Source
+          ```bash
+          pip install eisenhower-matrix==${{ steps.version.outputs.VERSION }}
+          ```
+          
+          ### What's New
+          See CHANGELOG.md for details.
+          
+          ### Features
+          - ✨ Eisenhower Matrix task organization
+          - 📥 Import/Export: JSON, CSV, Markdown, Calendar
+          - 🎨 Light/Dark theme support
+          - ✅ Task completion tracking
+          - 🔄 Task reordering
+          - 🎯 GTK4/Adwaita modern UI
+          EOF
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-flatpak:
+    name: Build and Upload Flatpak
+    needs: create-release
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-45
+      options: --privileged
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: eisenhower-matrix.flatpak
+          manifest-path: com.github.alesima.eisenhower.yml
+          cache-key: flatpak-builder-release-${{ github.sha }}
+      
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: eisenhower-matrix.flatpak
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install build dependencies
+        run: |
+          pip install build twine
+      
+      - name: Build package
+        run: |
+          python -m build
+      
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          twine upload dist/*
+        continue-on-error: true

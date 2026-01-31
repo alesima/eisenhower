@@ -2,9 +2,12 @@
 
 A modern GUI application for managing tasks using the Eisenhower Matrix method of prioritization. Features a beautiful GTK4 interface with libadwaita styling and full Flatpak support.
 
+[![Flatpak CI](https://github.com/alex/eisenhower/workflows/Flatpak%20CI/badge.svg)](https://github.com/alex/eisenhower/actions)
+[![Release](https://github.com/alex/eisenhower/workflows/Release/badge.svg)](https://github.com/alex/eisenhower/actions)
 ![GTK4](https://img.shields.io/badge/GTK-4-blue)
 ![Python](https://img.shields.io/badge/Python-3.9+-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+[![Flathub](https://img.shields.io/badge/Download%20on-Flathub-4A90E2?logo=flathub&logoColor=white)](https://flathub.org/apps/com.github.alesima.eisenhower)
 
 ## What is the Eisenhower Matrix?
 
@@ -65,13 +68,34 @@ Each task can include:
 
 ### Flatpak (Recommended)
 
+#### From Flathub
+
+Once approved on Flathub:
+
+```bash
+flatpak install flathub com.github.alesima.eisenhower
+flatpak run com.github.alesima.eisenhower
+```
+
+#### From Release Bundle
+
+Download the `.flatpak` bundle from [GitHub Releases](https://github.com/alex/eisenhower/releases):
+
+```bash
+flatpak install eisenhower-matrix.flatpak
+flatpak run com.github.alesima.eisenhower
+```
+
+#### Build from Source
+
 ```bash
 # Install Flatpak builder
 sudo dnf install flatpak-builder  # Fedora
 sudo apt install flatpak-builder  # Ubuntu/Debian
+sudo pacman -S flatpak-builder    # Arch/EndeavourOS
 
 # Build and install
-flatpak-builder --user --install --force-clean build-dir com.github.alesima.eisenhower.yml
+./build-flatpak.sh
 
 # Run
 flatpak run com.github.alesima.eisenhower
@@ -100,7 +124,7 @@ sudo pacman -S python python-pip python-gobject gtk4 libadwaita
 
 ```bash
 # Clone the repository
-git clone https://github.com/alex/eisenhower.git
+git clone https://github.com/alesima/eisenhower.git
 cd eisenhower
 
 # Install using pip
@@ -300,7 +324,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ```bash
 # Clone repository
-git clone https://github.com/alex/eisenhower.git
+git clone https://github.com/alesima/eisenhower.git
 cd eisenhower
 
 # Install in development mode

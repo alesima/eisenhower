@@ -19,7 +19,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Alex",
     author_email="",
-    url="https://github.com/alex/eisenhower",
+    url="https://github.com/alesima/eisenhower",
     license="MIT",
     packages=find_packages(),
     python_requires=">=3.9",
