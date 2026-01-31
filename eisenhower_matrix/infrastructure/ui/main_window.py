@@ -66,6 +66,7 @@ class MainWindow(Adw.ApplicationWindow):
         import_menu.append("Import Calendar (iCal)...", "app.import-calendar")
         menu.append_submenu("Import", import_menu)
         
+        menu.append("Keyboard Shortcuts", "app.shortcuts")
         menu.append("About", "app.about")
         menu.append("Quit", "app.quit")
         
@@ -112,8 +113,39 @@ class MainWindow(Adw.ApplicationWindow):
         
         self.set_content(toast_overlay)
         
+        # Set up keyboard shortcuts
+        self._setup_keyboard_shortcuts()
+        
         # Load CSS
         self.load_css()
+    
+    def _setup_keyboard_shortcuts(self):
+        """Set up window-level keyboard shortcuts"""
+        # Theme toggle: Ctrl+T
+        theme_action = Gio.SimpleAction.new("toggle-theme", None)
+        theme_action.connect("activate", lambda *args: self._on_theme_toggle(None))
+        self.add_action(theme_action)
+        app = self.get_application()
+        app.set_accels_for_action("win.toggle-theme", ["<Ctrl>T"])
+        
+        # Show/hide completed tasks: Ctrl+H
+        completed_action = Gio.SimpleAction.new("toggle-completed", None)
+        completed_action.connect("activate", lambda *args: self.completed_button.set_active(not self.completed_button.get_active()))
+        self.add_action(completed_action)
+        app.set_accels_for_action("win.toggle-completed", ["<Ctrl>H"])
+        
+        # Focus quadrants: Ctrl+1, Ctrl+2, Ctrl+3, Ctrl+4
+        for q in range(1, 5):
+            action = Gio.SimpleAction.new(f"focus-quadrant-{q}", None)
+            action.connect("activate", lambda a, p, quadrant=q: self._focus_quadrant(quadrant))
+            self.add_action(action)
+            app.set_accels_for_action(f"win.focus-quadrant-{q}", [f"<Ctrl>{q}"])
+    
+    def _focus_quadrant(self, quadrant: int):
+        """Focus on a specific quadrant"""
+        if quadrant in self.panels:
+            panel = self.panels[quadrant]
+            panel.grab_focus()
     
     def load_css(self):
         """Load custom CSS with light/dark theme support"""

@@ -47,6 +47,10 @@ class EisenhowerApp(Adw.Application):
         about_action.connect("activate", self.on_about)
         self.add_action(about_action)
         
+        shortcuts_action = Gio.SimpleAction.new("shortcuts", None)
+        shortcuts_action.connect("activate", self.on_shortcuts)
+        self.add_action(shortcuts_action)
+        
         export_action = Gio.SimpleAction.new("export", None)
         export_action.connect("activate", self.on_export)
         self.add_action(export_action)
@@ -82,7 +86,17 @@ class EisenhowerApp(Adw.Application):
         quit_action = Gio.SimpleAction.new("quit", None)
         quit_action.connect("activate", lambda *_: self.quit())
         self.add_action(quit_action)
+        
+        # Set up keyboard shortcuts
         self.set_accels_for_action("app.quit", ["<Ctrl>Q"])
+        self.set_accels_for_action("app.export", ["<Ctrl>E"])
+        self.set_accels_for_action("app.export-csv", ["<Ctrl><Shift>E"])
+        self.set_accels_for_action("app.export-markdown", ["<Ctrl><Alt>E"])
+        self.set_accels_for_action("app.import", ["<Ctrl>I"])
+        self.set_accels_for_action("app.import-csv", ["<Ctrl><Shift>I"])
+        self.set_accels_for_action("app.import-merge", ["<Ctrl><Alt>I"])
+        self.set_accels_for_action("app.about", ["F1"])
+        self.set_accels_for_action("app.shortcuts", ["<Ctrl>question"])
         
         # Register parameterized move-task action
         # Parameter format: "from_quadrant-task_id-to_quadrant"
@@ -446,6 +460,13 @@ class EisenhowerApp(Adw.Application):
             issue_url="https://github.com/alesima/eisenhower/issues"
         )
         about.present()
+    
+    def on_shortcuts(self, action, param):
+        """Show keyboard shortcuts window"""
+        from eisenhower_matrix.infrastructure.ui.shortcuts_window import ShortcutsWindow
+        
+        shortcuts = ShortcutsWindow(self.props.active_window)
+        shortcuts.present()
 
 
 def main():
