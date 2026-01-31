@@ -13,7 +13,7 @@ jobs:
     name: Build Flatpak
     runs-on: ubuntu-latest
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-45
+      image: bilelmoussaoui/flatpak-github-actions:gnome-47
       options: --privileged
     
     steps:
@@ -81,7 +81,12 @@ jobs:
             python3-gi \
             gir1.2-gtk-4.0 \
             gir1.2-adw-1 \
-            libgirepository1.0-dev
+            libgirepository1.0-dev \
+            libcairo2-dev \
+            pkg-config \
+            python3-dev \
+            gobject-introspection \
+            libgirepository-2.0-dev
       
       - name: Install Python dependencies
         run: |
