@@ -29,6 +29,7 @@ class QuadrantPanel(Gtk.Box):
         self.on_edit = on_edit
         self.on_reorder = on_reorder
         self.show_completed = False
+        self.search_text = ""
         
         info = QuadrantInfo.get_info(quadrant)
         
@@ -86,8 +87,8 @@ class QuadrantPanel(Gtk.Box):
     
     def _on_add_clicked(self, button):
         """Handle add task button click"""
-        def on_save(description, notes, tags, metadata):
-            self.service.add_task(self.quadrant, description, notes, tags, metadata)
+        def on_save(description, notes, tags, metadata, due_date):
+            self.service.add_task(self.quadrant, description, notes, tags, metadata, due_date)
         
         dialog = TaskDialog(self.get_root(), self.quadrant, task=None, on_save=on_save)
         dialog.present()
@@ -95,6 +96,10 @@ class QuadrantPanel(Gtk.Box):
     def set_show_completed(self, show: bool):
         """Set whether to show completed tasks"""
         self.show_completed = show
+    
+    def set_search_text(self, text: str):
+        """Set search filter text"""
+        self.search_text = text
     
     def refresh(self):
         """Refresh the task list"""
@@ -113,6 +118,10 @@ class QuadrantPanel(Gtk.Box):
             tasks = all_tasks
         else:
             tasks = [t for t in all_tasks if not t.completed]
+        
+        # Apply search filter
+        if self.search_text:
+            tasks = [t for t in tasks if t.matches_search(self.search_text)]
         
         if not tasks:
             empty_label = Gtk.Label(label="No tasks")

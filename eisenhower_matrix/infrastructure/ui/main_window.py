@@ -3,7 +3,7 @@
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, Gio
+from gi.repository import Gtk, Adw, Gio, GObject
 
 from eisenhower_matrix.application.matrix_service import EisenhowerMatrixService
 from eisenhower_matrix.infrastructure.ui.observer_adapter import GtkObserverAdapter
@@ -24,8 +24,18 @@ class MainWindow(Adw.ApplicationWindow):
         # State for showing completed tasks
         self.show_completed = False
         
+        # State for search
+        self.search_text = ""
+        
         # Header bar
         header = Adw.HeaderBar()
+        
+        # Search toggle button
+        search_toggle = Gtk.ToggleButton()
+        search_toggle.set_icon_name('system-search-symbolic')
+        search_toggle.set_tooltip_text('Search tasks')
+        header.pack_start(search_toggle)
+        self.search_toggle = search_toggle
         
         # Theme switcher button
         theme_button = Gtk.Button()
@@ -77,6 +87,22 @@ class MainWindow(Adw.ApplicationWindow):
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         
         main_box.append(header)
+        
+        # Search bar
+        self.search_bar = Gtk.SearchBar()
+        search_entry = Gtk.SearchEntry()
+        search_entry.set_placeholder_text("Search tasks...")
+        search_entry.set_hexpand(True)
+        search_entry.connect('search-changed', self._on_search_changed)
+        self.search_bar.set_child(search_entry)
+        self.search_bar.connect_entry(search_entry)
+        self.search_bar.set_key_capture_widget(self)
+        
+        # Connect search toggle to search bar
+        search_toggle.bind_property('active', self.search_bar, 'search-mode-enabled',
+                                    GObject.BindingFlags.BIDIRECTIONAL)
+        
+        main_box.append(self.search_bar)
         
         # Grid for quadrants
         grid = Gtk.Grid()
@@ -147,6 +173,17 @@ class MainWindow(Adw.ApplicationWindow):
             panel = self.panels[quadrant]
             panel.grab_focus()
     
+    def _on_search_changed(self, search_entry):
+        """Handle search text change"""
+        self.search_text = search_entry.get_text().strip()
+        self._refresh_all_panels()
+    
+    def _refresh_all_panels(self):
+        """Refresh all quadrant panels"""
+        for panel in self.panels.values():
+            panel.set_search_text(self.search_text)
+            panel.refresh()
+    
     def load_css(self):
         """Load custom CSS with light/dark theme support"""
         css_provider = Gtk.CssProvider()
@@ -215,6 +252,17 @@ class MainWindow(Adw.ApplicationWindow):
             .tag-badge {
                 background: alpha(@accent_color, 0.3);
             }
+        }
+        
+        /* Due date indicators */
+        .overdue-task {
+            color: @error_color;
+            font-weight: bold;
+        }
+        
+        .due-soon-task {
+            color: @warning_color;
+            font-weight: 600;
         }
         """
         css_provider.load_from_data(css.encode())
@@ -301,8 +349,8 @@ class MainWindow(Adw.ApplicationWindow):
         if not task:
             return
         
-        def on_save(description, notes, tags, metadata):
-            self.service.update_task(quadrant, task_id, description, notes, tags, metadata)
+        def on_save(description, notes, tags, metadata, due_date):
+            self.service.update_task(quadrant, task_id, description, notes, tags, metadata, due_date)
         
         dialog = TaskDialog(self, quadrant, task, on_save)
         dialog.present()    

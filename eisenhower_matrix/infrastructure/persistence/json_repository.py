@@ -147,7 +147,8 @@ class JsonTaskRepository(ITaskRepository):
             'completed_at': task.completed_at,
             'notes': task.notes,
             'tags': task.tags,
-            'metadata': task.metadata
+            'metadata': task.metadata,
+            'due_date': task.due_date
         }
     
     def _dict_to_task(self, data: dict) -> Task:
@@ -163,6 +164,8 @@ class JsonTaskRepository(ITaskRepository):
             data['tags'] = []
         if 'metadata' not in data:
             data['metadata'] = {}
+        if 'due_date' not in data:
+            data['due_date'] = None
         
         return Task(
             id=data['id'],
@@ -172,5 +175,6 @@ class JsonTaskRepository(ITaskRepository):
             completed_at=data.get('completed_at'),
             notes=data['notes'],
             tags=data['tags'],
-            metadata=data['metadata']
+            metadata=data['metadata'],
+            due_date=data['due_date']
         )

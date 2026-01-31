@@ -92,6 +92,8 @@ eisenhower_matrix/
 - Move tasks between quadrants
 - Reorder tasks within quadrants (up/down)
 - Task metadata: notes, tags, custom key-value pairs
+- **Task due dates with visual indicators** (overdue/due soon)
+- **Real-time task search and filtering** (description, notes, tags)
 
 ### ✅ **Import/Export**
 - **Export**: JSON, CSV, Markdown, Calendar CSV
@@ -105,6 +107,27 @@ eisenhower_matrix/
 - Completed task styling (strikethrough, muted color)
 - Completed tasks cannot be moved (business rule)
 - Observer pattern for reactive UI updates
+- **Search bar with real-time filtering** across all quadrants
+- **Visual due date indicators**: red (overdue), orange (due soon), gray (future)
+- **Keyboard shortcuts** for common actions (see shortcuts window)
+
+### ✅ **Search & Filtering**
+- Toggle search bar from header button
+- Real-time search across task descriptions, notes, and tags
+- Case-insensitive search
+- Filters all quadrants simultaneously
+- Service-level search methods for programmatic access
+
+### ✅ **Due Dates & Reminders**
+- Optional due dates for tasks (ISO format: YYYY-MM-DD)
+- Visual urgency indicators:
+  - 🔴 **Overdue** (red, bold) - Past due date
+  - 🟠 **Due Soon** (orange, semi-bold) - Within 3 days
+  - ⚪ **Future** (gray) - More than 3 days away
+- Quick "Today" button in task dialog
+- Domain methods: `is_overdue()`, `is_due_soon(days=3)`
+- Service methods: `get_overdue_tasks()`, `get_due_soon_tasks(days)`
+- Backward compatible with existing task data
 
 ### ✅ **Architecture Benefits**
 
@@ -294,8 +317,8 @@ Potential enhancements:
 5. ✨ Add comprehensive unit tests
 6. ✨ Add integration tests
 7. ✨ Add logging infrastructure
-8. ✨ Add task search and filtering
-9. ✨ Add task due dates and reminders
+8. ✅ **Task search and filtering** - COMPLETED
+9. ✅ **Task due dates and reminders** - COMPLETED
 10. ✨ Add task dependencies
 
 ## Impact

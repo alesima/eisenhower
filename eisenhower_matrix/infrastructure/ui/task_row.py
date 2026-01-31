@@ -78,6 +78,28 @@ class TaskRow(Gtk.Box):
                 tags_box.append(tag_label)
             content_box.append(tags_box)
         
+        # Due date display with visual indicators
+        if task.due_date and not task.completed:
+            from datetime import datetime
+            try:
+                due_dt = datetime.fromisoformat(task.due_date)
+                due_text = f"📅 Due: {due_dt.strftime('%Y-%m-%d')}"
+                due_label = Gtk.Label(label=due_text)
+                due_label.set_xalign(0)
+                due_label.add_css_class('caption')
+                
+                # Add styling based on urgency
+                if task.is_overdue():
+                    due_label.add_css_class('overdue-task')
+                elif task.is_due_soon(days=3):
+                    due_label.add_css_class('due-soon-task')
+                else:
+                    due_label.add_css_class('dim-label')
+                
+                content_box.append(due_label)
+            except (ValueError, AttributeError):
+                pass
+        
         # Notes indicator
         if task.notes:
             notes_label = Gtk.Label(label=f"📝 {task.notes[:50]}..." if len(task.notes) > 50 else f"📝 {task.notes}")

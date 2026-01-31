@@ -22,6 +22,8 @@ The Eisenhower Matrix is a time management framework that helps you prioritize t
 - ✨ **Beautiful GTK4 Interface** - Modern, aesthetic design using libadwaita
 - 📦 **Flatpak Support** - Easy installation and sandboxed security
 - 🏷️ **Rich Task Metadata** - Add notes, tags, and custom metadata to tasks
+- 🔍 **Real-time Search** - Search tasks across all quadrants by description, notes, or tags
+- 📅 **Due Dates with Visual Indicators** - Track deadlines with color-coded urgency (overdue/due soon)
 - ✅ Four-quadrant task organization (Eisenhower Matrix)
 - ✅ Task completion tracking with timestamps
 - ✅ Move tasks between quadrants
@@ -39,6 +41,9 @@ The Eisenhower Matrix is a time management framework that helps you prioritize t
 - ✏️ **Completed task styling** - strikethrough text, muted colors
 - 🔒 **Completed task restrictions** - cannot be moved between quadrants
 - ⚡ **Reactive updates** - Observer pattern for instant UI refresh
+- 🔍 **Search bar** - Toggle to filter tasks in real-time
+- 🔴 **Urgency indicators** - Visual color-coding for overdue (red), due soon (orange), and future tasks
+- ⌨️ **Keyboard shortcuts** - Quick access to common actions (Ctrl+Q, Ctrl+E, Ctrl+T, etc.)
 
 ### Architecture
 - 🏗️ **Hexagonal Architecture** - Clean separation of concerns
@@ -155,6 +160,7 @@ eisenhower-gui
    - **Description**: The main task title (required)
    - **Notes**: Additional context and details
    - **Tags**: Comma-separated tags (e.g., "work, urgent, client")
+   - **Due Date**: Optional deadline (YYYY-MM-DD format, or click "Today")
    - **Metadata**: Custom key-value pairs for any additional information
 3. Click **Save** to add the task
 
@@ -162,6 +168,18 @@ eisenhower-gui
 1. Click the **✏️ Edit** button on any task
 2. Modify the task details as needed
 3. Click **Save** to update the task
+
+#### Searching Tasks
+1. Click the **🔍 Search** icon in the header bar
+2. Type to filter tasks in real-time across all quadrants
+3. Search matches task descriptions, notes, and tags
+4. Press Escape or click the search icon again to close
+
+#### Due Date Indicators
+Tasks with due dates display color-coded indicators:
+- 🔴 **Red** (Overdue) - Task is past its due date
+- 🟠 **Orange** (Due Soon) - Task is due within 3 days
+- ⚪ **Gray** (Future) - Task is due more than 3 days from now
 
 #### Task Actions
 - **✓ Checkbox**: Mark task as completed

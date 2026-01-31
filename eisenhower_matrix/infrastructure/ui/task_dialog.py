@@ -3,9 +3,10 @@
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw
+from gi.repository import Gtk, Adw, GLib
 
 from typing import Optional
+from datetime import datetime, date, timedelta
 from eisenhower_matrix.domain import Task
 
 
@@ -112,6 +113,82 @@ class TaskDialog(Adw.Window):
         tags_group.add(self.tags_entry)
         form_box.append(tags_group)
         
+        # Due Date
+        due_date_group = Adw.PreferencesGroup()
+        due_date_group.set_title("Due Date")
+        due_date_group.set_description("Optional deadline for this task")
+        
+        due_date_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        
+        # Date display button
+        self.due_date_button = Gtk.Button()
+        self.due_date_button.set_hexpand(True)
+        self._selected_date = None
+        
+        if task and task.due_date:
+            try:
+                selected_dt = datetime.fromisoformat(task.due_date)
+                self._selected_date = selected_dt.date()
+                self.due_date_button.set_label(self._selected_date.strftime("%B %d, %Y"))
+            except (ValueError, AttributeError):
+                self.due_date_button.set_label("Select date...")
+        else:
+            self.due_date_button.set_label("Select date...")
+        
+        # Calendar popover
+        self.calendar_popover = Gtk.Popover()
+        calendar_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        calendar_box.set_margin_top(6)
+        calendar_box.set_margin_bottom(6)
+        calendar_box.set_margin_start(6)
+        calendar_box.set_margin_end(6)
+        
+        self.calendar = Gtk.Calendar()
+        self.calendar.set_show_heading(True)
+        self.calendar.set_show_day_names(True)
+        self.calendar.set_show_week_numbers(False)
+        
+        # Set calendar to task's due date if it exists
+        if self._selected_date:
+            self.calendar.select_day(GLib.DateTime.new_local(
+                self._selected_date.year,
+                self._selected_date.month,
+                self._selected_date.day,
+                0, 0, 0.0
+            ))
+        
+        self.calendar.connect('day-selected', self._on_calendar_day_selected)
+        calendar_box.append(self.calendar)
+        
+        # Quick action buttons in calendar
+        quick_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        quick_box.set_homogeneous(True)
+        
+        today_quick_btn = Gtk.Button(label="Today")
+        today_quick_btn.connect('clicked', self._on_today_clicked)
+        quick_box.append(today_quick_btn)
+        
+        tomorrow_btn = Gtk.Button(label="Tomorrow")
+        tomorrow_btn.connect('clicked', self._on_tomorrow_clicked)
+        quick_box.append(tomorrow_btn)
+        
+        calendar_box.append(quick_box)
+        
+        self.calendar_popover.set_child(calendar_box)
+        self.calendar_popover.set_parent(self.due_date_button)
+        
+        self.due_date_button.connect('clicked', lambda b: self.calendar_popover.popup())
+        due_date_box.append(self.due_date_button)
+        
+        # Clear button
+        clear_date_btn = Gtk.Button(icon_name="edit-clear-symbolic")
+        clear_date_btn.set_tooltip_text("Clear due date")
+        clear_date_btn.connect('clicked', self._on_clear_date)
+        due_date_box.append(clear_date_btn)
+        
+        due_date_group.add(due_date_box)
+        form_box.append(due_date_group)
+        
         # Metadata section
         metadata_group = Adw.PreferencesGroup()
         metadata_group.set_title("Metadata")
@@ -183,6 +260,38 @@ class TaskDialog(Adw.Window):
         
         return metadata
     
+    def _on_calendar_day_selected(self, calendar):
+        """Handle calendar day selection"""
+        selected = calendar.get_date()
+        self._selected_date = date(selected.get_year(), selected.get_month(), selected.get_day_of_month())
+        self.due_date_button.set_label(self._selected_date.strftime("%B %d, %Y"))
+        self.calendar_popover.popdown()
+    
+    def _on_today_clicked(self, button):
+        """Set date to today"""
+        today = date.today()
+        self._selected_date = today
+        self.calendar.select_day(GLib.DateTime.new_local(
+            today.year, today.month, today.day, 0, 0, 0.0
+        ))
+        self.due_date_button.set_label(today.strftime("%B %d, %Y"))
+        self.calendar_popover.popdown()
+    
+    def _on_tomorrow_clicked(self, button):
+        """Set date to tomorrow"""
+        tomorrow = date.today() + timedelta(days=1)
+        self._selected_date = tomorrow
+        self.calendar.select_day(GLib.DateTime.new_local(
+            tomorrow.year, tomorrow.month, tomorrow.day, 0, 0, 0.0
+        ))
+        self.due_date_button.set_label(tomorrow.strftime("%B %d, %Y"))
+        self.calendar_popover.popdown()
+    
+    def _on_clear_date(self, button):
+        """Clear the selected date"""
+        self._selected_date = None
+        self.due_date_button.set_label("Select date...")
+    
     def _on_save_clicked(self, button):
         """Handle save button click"""
         description = self.desc_entry.get_text().strip()
@@ -198,10 +307,13 @@ class TaskDialog(Adw.Window):
         tags_text = self.tags_entry.get_text().strip()
         tags = [tag.strip() for tag in tags_text.split(',') if tag.strip()]
         
+        # Get due date from selected date
+        due_date = self._selected_date.isoformat() if self._selected_date else None
+        
         # Get metadata
         metadata = self._get_metadata()
         
         if self.on_save:
-            self.on_save(description, notes, tags, metadata)
+            self.on_save(description, notes, tags, metadata, due_date)
         
         self.close()

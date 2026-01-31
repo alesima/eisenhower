@@ -62,7 +62,8 @@ class EisenhowerMatrixService:
     
     def add_task(self, quadrant: int, description: str, notes: str = "",
                  tags: Optional[List[str]] = None, 
-                 metadata: Optional[Dict[str, str]] = None) -> Task:
+                 metadata: Optional[Dict[str, str]] = None,
+                 due_date: Optional[str] = None) -> Task:
         """
         Add a new task to specified quadrant
         
@@ -72,6 +73,7 @@ class EisenhowerMatrixService:
             notes: Additional notes
             tags: List of tags
             metadata: Custom key-value metadata
+            due_date: Optional due date in ISO format (YYYY-MM-DD)
             
         Returns:
             Created Task entity
@@ -83,7 +85,7 @@ class EisenhowerMatrixService:
             raise ValueError(f"Invalid quadrant: {quadrant}")
         
         task_id = self._get_next_id(quadrant)
-        task = Task.create(task_id, description, notes, tags, metadata)
+        task = Task.create(task_id, description, notes, tags, metadata, due_date)
         
         self._tasks[quadrant].append(task)
         self._repository.save(self._tasks)
@@ -95,7 +97,8 @@ class EisenhowerMatrixService:
                     description: Optional[str] = None,
                     notes: Optional[str] = None,
                     tags: Optional[List[str]] = None,
-                    metadata: Optional[Dict[str, str]] = None) -> bool:
+                    metadata: Optional[Dict[str, str]] = None,
+                    due_date: Optional[str] = None) -> bool:
         """
         Update task details
         
@@ -109,7 +112,7 @@ class EisenhowerMatrixService:
         
         for task in self._tasks[quadrant]:
             if task.id == task_id:
-                task.update_details(description, notes, tags, metadata)
+                task.update_details(description, notes, tags, metadata, due_date)
                 self._repository.save(self._tasks)
                 self._notify_observers()
                 return True
@@ -308,3 +311,79 @@ class EisenhowerMatrixService:
             return True
         except Exception:
             return False
+    
+    def search_tasks(self, search_text: str, quadrant: Optional[int] = None) -> Dict[int, List[Task]]:
+        """
+        Search for tasks matching search text
+        
+        Args:
+            search_text: Text to search for in task description, notes, and tags
+            quadrant: Optional quadrant to search in (1-4). If None, searches all quadrants.
+            
+        Returns:
+            Dictionary mapping quadrant numbers to matching tasks
+        """
+        if not search_text or not search_text.strip():
+            # Return all tasks if no search text
+            if quadrant is not None:
+                if not QuadrantInfo.validate_quadrant(quadrant):
+                    raise ValueError(f"Invalid quadrant: {quadrant}")
+                return {quadrant: self._tasks[quadrant][:]}
+            return {q: tasks[:] for q, tasks in self._tasks.items()}
+        
+        results = {}
+        quadrants_to_search = [quadrant] if quadrant is not None else range(1, 5)
+        
+        for q in quadrants_to_search:
+            if quadrant is not None and not QuadrantInfo.validate_quadrant(quadrant):
+                raise ValueError(f"Invalid quadrant: {quadrant}")
+            matching_tasks = [task for task in self._tasks[q] if task.matches_search(search_text)]
+            if matching_tasks:
+                results[q] = matching_tasks
+        
+        return results
+    
+    def get_overdue_tasks(self, quadrant: Optional[int] = None) -> Dict[int, List[Task]]:
+        """
+        Get all overdue tasks
+        
+        Args:
+            quadrant: Optional quadrant to check (1-4). If None, checks all quadrants.
+            
+        Returns:
+            Dictionary mapping quadrant numbers to overdue tasks
+        """
+        results = {}
+        quadrants_to_check = [quadrant] if quadrant is not None else range(1, 5)
+        
+        for q in quadrants_to_check:
+            if quadrant is not None and not QuadrantInfo.validate_quadrant(quadrant):
+                raise ValueError(f"Invalid quadrant: {quadrant}")
+            overdue_tasks = [task for task in self._tasks[q] if task.is_overdue()]
+            if overdue_tasks:
+                results[q] = overdue_tasks
+        
+        return results
+    
+    def get_due_soon_tasks(self, days: int = 3, quadrant: Optional[int] = None) -> Dict[int, List[Task]]:
+        """
+        Get tasks due within specified days
+        
+        Args:
+            days: Number of days to look ahead (default 3)
+            quadrant: Optional quadrant to check (1-4). If None, checks all quadrants.
+            
+        Returns:
+            Dictionary mapping quadrant numbers to tasks due soon
+        """
+        results = {}
+        quadrants_to_check = [quadrant] if quadrant is not None else range(1, 5)
+        
+        for q in quadrants_to_check:
+            if quadrant is not None and not QuadrantInfo.validate_quadrant(quadrant):
+                raise ValueError(f"Invalid quadrant: {quadrant}")
+            due_soon_tasks = [task for task in self._tasks[q] if task.is_due_soon(days)]
+            if due_soon_tasks:
+                results[q] = due_soon_tasks
+        
+        return results
