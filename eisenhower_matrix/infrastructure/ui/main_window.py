@@ -9,17 +9,19 @@ from eisenhower_matrix.application.matrix_service import EisenhowerMatrixService
 from eisenhower_matrix.infrastructure.ui.observer_adapter import GtkObserverAdapter
 from eisenhower_matrix.infrastructure.ui.quadrant_panel import QuadrantPanel
 from eisenhower_matrix.infrastructure.ui.task_dialog import TaskDialog
+from eisenhower_matrix.infrastructure.ui.project_dialog import ProjectSelectorDialog
 
 
 class MainWindow(Adw.ApplicationWindow):
     """Main application window"""
     
     def __init__(self, app, service: EisenhowerMatrixService):
-        super().__init__(application=app, title="Eisenhower Matrix")
+        super().__init__(application=app)
         self.service = service
         self.service.add_observer(GtkObserverAdapter(self.on_matrix_changed))
         
         self.set_default_size(1200, 800)
+        self.update_window_title()
         
         # State for showing completed tasks
         self.show_completed = False
@@ -29,6 +31,13 @@ class MainWindow(Adw.ApplicationWindow):
         
         # Header bar
         header = Adw.HeaderBar()
+        
+        # Project selector button
+        project_btn = Gtk.Button()
+        project_btn.set_icon_name('folder-symbolic')
+        project_btn.set_tooltip_text('Manage projects')
+        project_btn.connect('clicked', self._on_projects_clicked)
+        header.pack_start(project_btn)
         
         # Search toggle button
         search_toggle = Gtk.ToggleButton()
@@ -172,6 +181,19 @@ class MainWindow(Adw.ApplicationWindow):
         if quadrant in self.panels:
             panel = self.panels[quadrant]
             panel.grab_focus()
+    
+    def _on_projects_clicked(self, button):
+        """Handle projects button click"""
+        dialog = ProjectSelectorDialog(self, self.get_application())
+        dialog.present()
+    
+    def update_window_title(self):
+        """Update window title with current project name"""
+        app = self.get_application()
+        if app and app.current_project:
+            self.set_title(f"{app.current_project.name} - Eisenhower Matrix")
+        else:
+            self.set_title("Eisenhower Matrix")
     
     def _on_search_changed(self, search_entry):
         """Handle search text change"""

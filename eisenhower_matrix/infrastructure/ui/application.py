@@ -7,7 +7,9 @@ from gi.repository import Gtk, Adw, GLib, Gio
 from pathlib import Path
 
 from eisenhower_matrix.application.matrix_service import EisenhowerMatrixService
+from eisenhower_matrix.application.project_management import ProjectManagementService
 from eisenhower_matrix.infrastructure.persistence import JsonTaskRepository
+from eisenhower_matrix.infrastructure.persistence.json_project_repository import JsonProjectRepository
 from eisenhower_matrix.infrastructure.ui.main_window import MainWindow
 from eisenhower_matrix.application import TaskExportUseCase, TaskImportUseCase
 
@@ -25,11 +27,47 @@ class EisenhowerApp(Adw.Application):
             application_id='com.github.alesima.eisenhower',
             flags=Gio.ApplicationFlags.FLAGS_NONE
         )
-        # Dependency Injection: Create infrastructure and domain service
-        repository = JsonTaskRepository()
+        # Dependency Injection: Create infrastructure and domain services
+        self.project_repository = JsonProjectRepository()
+        self.project_service = ProjectManagementService(self.project_repository)
+        
+        # Get the last accessed project or default
+        projects = self.project_service.get_all_projects()
+        self.current_project = projects[0] if projects else None
+        
+        if not self.current_project:
+            # Create default project if none exists
+            self.current_project = self.project_service.create_project("My Tasks", "Default project")
+        
+        # Create task repository for current project
+        repository = JsonTaskRepository(project_id=self.current_project.id)
         self.service = EisenhowerMatrixService(repository)
         self.export_use_case = TaskExportUseCase(self.service)
         self.import_use_case = TaskImportUseCase(self.service)
+    
+    def switch_project(self, project_id: str):
+        """
+        Switch to a different project
+        
+        Args:
+            project_id: ID of the project to switch to
+        """
+        project = self.project_service.get_project(project_id)
+        if project:
+            self.current_project = project
+            self.project_service.mark_project_accessed(project_id)
+            
+            # Create new repository and service for the project
+            repository = JsonTaskRepository(project_id=project_id)
+            self.service = EisenhowerMatrixService(repository)
+            self.export_use_case = TaskExportUseCase(self.service)
+            self.import_use_case = TaskImportUseCase(self.service)
+            
+            # Refresh the main window
+            win = self.props.active_window
+            if win:
+                win.on_matrix_changed()
+                win.update_window_title()
     
     def do_activate(self):
         """Activate the application"""
@@ -452,7 +490,7 @@ class EisenhowerApp(Adw.Application):
             application_name="Eisenhower Matrix",
             application_icon="com.github.alesima.eisenhower",
             developer_name="Alex Silva",
-            version="1.0.2",
+            version="1.0.3",
             developers=["Alex Silva"],
             copyright="© 2026 Alex Silva",
             license_type=Gtk.License.MIT_X11,

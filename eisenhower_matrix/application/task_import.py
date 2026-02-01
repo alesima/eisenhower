@@ -38,16 +38,11 @@ class TaskImportUseCase:
                     else:
                         quadrant = int(quadrant_str)
                     
-                    # Parse due date and add to metadata
+                    # Parse due date
+                    due_date = row.get('due_date', '') or None
+                    
+                    # Parse metadata
                     metadata = {}
-                    if row.get('due_date'):
-                        metadata['Deadline'] = row['due_date']
-                    
-                    # Parse priority and add to metadata
-                    if row.get('priority'):
-                        metadata['Priority'] = row['priority']
-                    
-                    # Parse existing metadata and merge
                     if row.get('metadata'):
                         try:
                             import ast
@@ -65,7 +60,8 @@ class TaskImportUseCase:
                         description=row['description'],
                         notes=row.get('notes', ''),
                         tags=tags if tags else None,
-                        metadata=metadata if metadata else None
+                        metadata=metadata if metadata else None,
+                        due_date=due_date
                     )
                     
                     # Set completion status if needed
@@ -161,8 +157,9 @@ class TaskImportUseCase:
                 
                 # Build metadata
                 metadata = {'source': 'calendar', 'event_id': event.get('UID', '')}
-                if due_date:
-                    metadata['Deadline'] = due_date.isoformat()
+                
+                # Format due date as ISO date string for task
+                due_date_str = due_date.strftime('%Y-%m-%d') if due_date else None
                 
                 # Add task using matrix service
                 self._service.add_task(
@@ -170,7 +167,8 @@ class TaskImportUseCase:
                     description=summary,
                     notes=notes,
                     tags=['calendar-import'],
-                    metadata=metadata
+                    metadata=metadata,
+                    due_date=due_date_str
                 )
             
             return True

@@ -35,7 +35,7 @@ Thank you for considering contributing to the Eisenhower Matrix application! Thi
 
 ```bash
 # Clone repository
-git clone https://github.com/alex/eisenhower.git
+git clone https://github.com/alesima/eisenhower.git
 cd eisenhower
 
 # Install system dependencies

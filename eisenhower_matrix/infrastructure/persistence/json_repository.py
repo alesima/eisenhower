@@ -19,17 +19,19 @@ class JsonTaskRepository(ITaskRepository):
     Dependency Inversion: Implements domain port, depends on abstraction
     """
     
-    def __init__(self, data_file: str = None):
+    def __init__(self, data_file: str = None, project_id: str = "default"):
         """
         Initialize JSON repository
         
         Args:
             data_file: Path to JSON file. Defaults to standard location.
+            project_id: Project identifier for multi-project support
         """
         if data_file is None:
             data_dir = Path.home() / ".local" / "share" / "eisenhower"
             data_dir.mkdir(parents=True, exist_ok=True)
-            self.data_file = data_dir / "tasks.json"
+            # Use project-specific file name
+            self.data_file = data_dir / f"tasks_{project_id}.json"
         else:
             self.data_file = Path(data_file)
     

@@ -9,8 +9,8 @@ Hexagonal Architecture (Ports and Adapters):
 SOLID Principles applied throughout.
 """
 
-__version__ = "1.0.2"
-__author__ = "Alex"
+__version__ = "1.0.3"
+__author__ = "Alex Silva"
 
 # Export domain abstractions
 from eisenhower_matrix.domain import (

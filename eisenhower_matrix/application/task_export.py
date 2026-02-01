@@ -30,7 +30,7 @@ class TaskExportUseCase:
             tasks = self._service.get_all_tasks()
             with open(file_path, 'w', newline='', encoding='utf-8') as csvfile:
                 fieldnames = ['quadrant', 'id', 'description', 'notes', 'tags', 
-                             'completed', 'completed_at', 'created', 'metadata']
+                             'completed', 'completed_at', 'created', 'due_date', 'metadata']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
                 
@@ -45,6 +45,7 @@ class TaskExportUseCase:
                             'completed': task.completed,
                             'completed_at': task.completed_at or '',
                             'created': task.created or '',
+                            'due_date': task.due_date or '',
                             'metadata': str(task.metadata) if task.metadata else ''
                         })
             return True
@@ -63,6 +64,7 @@ class TaskExportUseCase:
                         mdfile.write(f"- **Description:** {task.description}\n")
                         mdfile.write(f"- **Notes:** {task.notes or 'N/A'}\n")
                         mdfile.write(f"- **Tags:** {', '.join(task.tags) if task.tags else 'N/A'}\n")
+                        mdfile.write(f"- **Due Date:** {task.due_date or 'N/A'}\n")
                         mdfile.write(f"- **Completed:** {'Yes' if task.completed else 'No'}\n")
                         mdfile.write(f"- **Completed At:** {task.completed_at or 'N/A'}\n")
                         mdfile.write(f"- **Created At:** {task.created or 'N/A'}\n")
@@ -90,9 +92,9 @@ class TaskExportUseCase:
                 
                 for quadrant, task_list in tasks.items():
                     for task in task_list:
-                        # Use created date as start date, completed_at as due date if completed
-                        start_date = task.created.strftime('%Y-%m-%d') if task.created else ''
-                        due_date = task.completed_at.strftime('%Y-%m-%d') if task.completed_at else ''
+                        # Use due_date field if available, otherwise use created as start
+                        start_date = task.created.split('T')[0] if task.created else ''
+                        due_date = task.due_date if task.due_date else (task.completed_at.split('T')[0] if task.completed_at else '')
                         
                         writer.writerow({
                             'Subject': task.description,

@@ -82,7 +82,7 @@ flatpak run com.github.alesima.eisenhower
 
 #### From Release Bundle
 
-Download the `.flatpak` bundle from [GitHub Releases](https://github.com/alex/eisenhower/releases):
+Download the `.flatpak` bundle from [GitHub Releases](https://github.com/alesima/eisenhower/releases):
 
 ```bash
 flatpak install eisenhower-matrix.flatpak
@@ -388,7 +388,7 @@ Q3: Urgent, Not Important                │ Q4: Not Urgent, Not Important
 
   ○ [1] Reply to emails                  │   (no tasks)
 
-Data file: /home/alex/.local/share/eisenhower/tasks.json
+Data file: /home/<user>/.local/share/eisenhower/tasks.json
 ```
 
 ## Tips for Effective Use
@@ -442,7 +442,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Author
 
-Alex
+Alex Silva
 
 ## Acknowledgments
 

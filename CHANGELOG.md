@@ -7,10 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-01-31
+
 ### Added
-- GitHub Actions CI/CD workflows
-- Automated Flatpak builds
-- Flathub submission preparation
+- **Projects feature**: Create and manage multiple Eisenhower matrices
+- Project management dialog for creating, editing, and deleting projects
+- Project selector in header bar with folder icon
+- Each project maintains separate task storage
+- Automatic default project creation on first run
+- Last accessed tracking for projects
+- Window title shows current project name
+- Safe deletion with confirmation dialog (cannot delete last project)
+- Project metadata: name, description, creation date, last accessed
+
+### Changed
+- Task storage now project-specific (tasks_<project_id>.json)
+- Application title includes current project name
+
+## [1.0.2] - 2026-01-31
+
+### Added
+- **Task search and filtering**: Real-time search across all quadrants
+- Search bar toggle button in header
+- Search matches task descriptions, notes, and tags (case-insensitive)
+- **Due dates with visual indicators**:
+  - Calendar date picker with Today and Tomorrow shortcuts
+  - Color-coded urgency: Red (overdue), Orange (due soon), Gray (future)
+  - Due date display on task rows
+  - Domain methods: `is_overdue()`, `is_due_soon(days=3)`
+- Service methods for filtering: `search_tasks()`, `get_overdue_tasks()`, `get_due_soon_tasks()`
+
+### Changed
+- Task dialog now includes calendar date picker
+- Export formats (CSV, Markdown, Calendar) include due_date field
+- Import formats properly handle due_date field
+- Calendar imports now use native due_date field
+
+## [1.0.1] - 2026-01-31
+
+### Added
+- **Comprehensive keyboard shortcuts system**
+- Keyboard shortcuts window (accessible via menu)
+- Application shortcuts:
+  - Ctrl+Q: Quit application
+  - Ctrl+E: Export as JSON
+  - Ctrl+Shift+E: Export as CSV
+  - Ctrl+Alt+E: Export as Markdown
+  - Ctrl+I: Import JSON
+  - Ctrl+Shift+I: Import CSV
+  - Ctrl+Alt+I: Import and merge JSON
+  - F1: About dialog
+- Window shortcuts:
+  - Ctrl+T: Toggle light/dark theme
+  - Ctrl+H: Toggle show/hide completed tasks
+  - Ctrl+1/2/3/4: Focus on specific quadrant
+- Menu item: "Keyboard Shortcuts" to view all shortcuts
+
+### Changed
+- Added keyboard accelerators for all major actions
+- Improved accessibility with keyboard navigation
 
 ## [1.0.0] - 2026-01-31
 
@@ -51,5 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interface segregation with ports and adapters
 - Cross-platform support (Linux, macOS, Unix)
 
-[Unreleased]: https://github.com/alex/eisenhower/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/alex/eisenhower/releases/tag/v1.0.0
+[Unreleased]: https://github.com/alesima/eisenhower/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/alesima/eisenhower/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/alesima/eisenhower/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/alesima/eisenhower/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/alesima/eisenhower/releases/tag/v1.0.0

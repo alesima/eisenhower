@@ -5,15 +5,19 @@ This layer contains pure domain logic with no external dependencies.
 """
 
 from eisenhower_matrix.domain.task import Task
+from eisenhower_matrix.domain.project import Project
 from eisenhower_matrix.domain.quadrant_info import QuadrantInfo
 from eisenhower_matrix.domain.task_repository import ITaskRepository
+from eisenhower_matrix.domain.project_repository import IProjectRepository
 from eisenhower_matrix.domain.observer import IObserver
 from eisenhower_matrix.domain.notification_service import INotificationService
 
 __all__ = [
     'Task',
+    'Project',
     'QuadrantInfo',
     'ITaskRepository',
+    'IProjectRepository',
     'IObserver',
     'INotificationService',
 ]
