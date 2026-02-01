@@ -1,83 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="128" height="128" version="1.1" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-    </linearGradient>
-    
-    <linearGradient id="q1Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
-    </linearGradient>
-    
-    <linearGradient id="q2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffecd2;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#fcb69f;stop-opacity:1" />
-    </linearGradient>
-    
-    <linearGradient id="q3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#a8edea;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#fed6e3;stop-opacity:1" />
-    </linearGradient>
-    
-    <linearGradient id="q4Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#d299c2;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#fef9d7;stop-opacity:1" />
-    </linearGradient>
-    
-    <filter id="shadow">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-      <feOffset dx="0" dy="2" result="offsetblur"/>
+    <!-- Shadow filter for 3D depth -->
+    <filter id="shadow" x="-0.2" y="-0.2" width="1.4" height="1.4">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
       <feComponentTransfer>
-        <feFuncA type="linear" slope="0.3"/>
+        <feFuncA type="linear" slope="0.4"/>
       </feComponentTransfer>
       <feMerge>
         <feMergeNode/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    
+    <!-- Inner shadow for depth -->
+    <filter id="innerShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="-2"/>
+      <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1"/>
+      <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
+      <feBlend in2="SourceGraphic" mode="multiply"/>
+    </filter>
   </defs>
   
-  <!-- Background rounded rectangle -->
-  <rect x="8" y="8" width="112" height="112" rx="24" ry="24" fill="url(#bgGradient)" opacity="0.95"/>
-  
-  <!-- Main grid container -->
-  <g transform="translate(20, 20)">
-    <!-- Quadrant 1: Urgent & Important (Top Left) - Red/Pink -->
-    <rect x="0" y="0" width="38" height="38" rx="6" ry="6" 
-          fill="url(#q1Gradient)" filter="url(#shadow)" opacity="0.9"/>
-    <text x="19" y="23" font-family="sans-serif" font-size="20" font-weight="bold" 
-          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#c0392b; stroke-width:2px;">1</text>
+  <!-- Background base with 3D effect -->
+  <g filter="url(#shadow)">
+    <!-- Main rounded square base -->
+    <rect x="12" y="12" width="104" height="104" rx="20" ry="20" fill="#2e3440" opacity="0.95"/>
     
-    <!-- Quadrant 2: Important, Not Urgent (Top Right) - Orange/Yellow -->
-    <rect x="50" y="0" width="38" height="38" rx="6" ry="6" 
-          fill="url(#q2Gradient)" filter="url(#shadow)" opacity="0.9"/>
-    <text x="69" y="23" font-family="sans-serif" font-size="20" font-weight="bold" 
-          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#d68910; stroke-width:2px;">2</text>
+    <!-- 3D perspective grid container -->
+    <g transform="translate(20, 16)">
+      <!-- Top edge highlight for 3D effect -->
+      <rect x="0" y="0" width="88" height="4" rx="2" fill="#4c566a" opacity="0.6"/>
+      
+      <!-- Left edge highlight -->
+      <rect x="0" y="4" width="4" height="88" rx="2" fill="#4c566a" opacity="0.4"/>
+      
+      <!-- Main grid with 3D depth -->
+      <g transform="translate(4, 4)">
+        <!-- Quadrant 1: Urgent & Important (Top Left) - Red -->
+        <rect x="2" y="2" width="38" height="38" rx="4" fill="#bf616a"/>
+        <rect x="2" y="2" width="38" height="2" rx="1" fill="#d08770" opacity="0.5"/>
+        <rect x="2" y="2" width="2" height="38" rx="1" fill="#d08770" opacity="0.3"/>
+        
+        <!-- Quadrant 2: Important, Not Urgent (Top Right) - Orange -->
+        <rect x="44" y="2" width="38" height="38" rx="4" fill="#d08770"/>
+        <rect x="44" y="2" width="38" height="2" rx="1" fill="#ebcb8b" opacity="0.5"/>
+        <rect x="44" y="2" width="2" height="38" rx="1" fill="#ebcb8b" opacity="0.3"/>
+        
+        <!-- Quadrant 3: Urgent, Not Important (Bottom Left) - Blue -->
+        <rect x="2" y="44" width="38" height="38" rx="4" fill="#5e81ac"/>
+        <rect x="2" y="44" width="38" height="2" rx="1" fill="#81a1c1" opacity="0.5"/>
+        <rect x="2" y="44" width="2" height="38" rx="1" fill="#81a1c1" opacity="0.3"/>
+        
+        <!-- Quadrant 4: Not Urgent, Not Important (Bottom Right) - Green -->
+        <rect x="44" y="44" width="38" height="38" rx="4" fill="#a3be8c"/>
+        <rect x="44" y="44" width="38" height="2" rx="1" fill="#b5cc9a" opacity="0.5"/>
+        <rect x="44" y="44" width="2" height="38" rx="1" fill="#b5cc9a" opacity="0.3"/>
+        
+        <!-- Center divider lines with depth -->
+        <rect x="40" y="0" width="4" height="84" rx="1" fill="#2e3440" opacity="0.8"/>
+        <rect x="0" y="40" width="84" height="4" rx="1" fill="#2e3440" opacity="0.8"/>
+        
+        <!-- Highlight on center dividers for 3D effect -->
+        <rect x="40" y="0" width="1" height="84" fill="#4c566a" opacity="0.4"/>
+        <rect x="0" y="40" width="84" height="1" fill="#4c566a" opacity="0.4"/>
+      </g>
+      
+      <!-- Bottom shadow edge for 3D depth -->
+      <rect x="4" y="92" width="88" height="4" rx="2" fill="#000000" opacity="0.3"/>
+      <rect x="92" y="4" width="4" height="88" rx="2" fill="#000000" opacity="0.2"/>
+    </g>
     
-    <!-- Quadrant 3: Urgent, Not Important (Bottom Left) - Cyan/Blue -->
-    <rect x="0" y="50" width="38" height="38" rx="6" ry="6" 
-          fill="url(#q3Gradient)" filter="url(#shadow)" opacity="0.9"/>
-    <text x="19" y="73" font-family="sans-serif" font-size="20" font-weight="bold" 
-          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#1a7da1; stroke-width:2px;">3</text>
-    
-    <!-- Quadrant 4: Not Urgent, Not Important (Bottom Right) - Purple/Pastel -->
-    <rect x="50" y="50" width="38" height="38" rx="6" ry="6" 
-          fill="url(#q4Gradient)" filter="url(#shadow)" opacity="0.9"/>
-    <text x="69" y="73" font-family="sans-serif" font-size="20" font-weight="bold" 
-          fill="white" text-anchor="middle" style="paint-order:stroke; stroke:#7d3c98; stroke-width:2px;">4</text>
-    
-    <!-- Central cross/divider lines -->
-    <line x1="44" y1="6" x2="44" y2="82" stroke="white" stroke-width="3" opacity="0.8" stroke-linecap="round"/>
-    <line x1="6" y1="44" x2="82" y2="44" stroke="white" stroke-width="3" opacity="0.8" stroke-linecap="round"/>
-    
-    <!-- Corner accent dots -->
-    <circle cx="44" cy="44" r="4" fill="white" opacity="0.9"/>
+    <!-- Subtle outer glow for modern look -->
+    <rect x="12" y="12" width="104" height="104" rx="20" ry="20" 
+          fill="none" stroke="#88c0d0" stroke-width="0.5" opacity="0.3"/>
   </g>
-  
-  <!-- Decorative elements -->
-  <circle cx="110" cy="25" r="3" fill="white" opacity="0.4"/>
-  <circle cx="100" cy="105" r="2.5" fill="white" opacity="0.3"/>
-  <circle cx="25" cy="108" r="2" fill="white" opacity="0.3"/>
 </svg>

@@ -89,6 +89,10 @@ class EisenhowerApp(Adw.Application):
         shortcuts_action.connect("activate", self.on_shortcuts)
         self.add_action(shortcuts_action)
         
+        user_guide_action = Gio.SimpleAction.new("user-guide", None)
+        user_guide_action.connect("activate", self.on_user_guide)
+        self.add_action(user_guide_action)
+        
         export_action = Gio.SimpleAction.new("export", None)
         export_action.connect("activate", self.on_export)
         self.add_action(export_action)
@@ -135,6 +139,7 @@ class EisenhowerApp(Adw.Application):
         self.set_accels_for_action("app.import-merge", ["<Ctrl><Alt>I"])
         self.set_accels_for_action("app.about", ["F1"])
         self.set_accels_for_action("app.shortcuts", ["<Ctrl>question"])
+        self.set_accels_for_action("app.user-guide", ["F2"])
         
         # Register parameterized move-task action
         # Parameter format: "from_quadrant-task_id-to_quadrant"
@@ -490,7 +495,7 @@ class EisenhowerApp(Adw.Application):
             application_name="Eisenhower Matrix",
             application_icon="com.github.alesima.eisenhower",
             developer_name="Alex Silva",
-            version="1.0.3",
+            version="1.0.4",
             developers=["Alex Silva"],
             copyright="© 2026 Alex Silva",
             license_type=Gtk.License.MIT_X11,
@@ -505,6 +510,13 @@ class EisenhowerApp(Adw.Application):
         
         shortcuts = ShortcutsWindow(self.props.active_window)
         shortcuts.present()
+    
+    def on_user_guide(self, action, param):
+        """Show user guide dialog"""
+        from eisenhower_matrix.infrastructure.ui.user_guide_dialog import UserGuideDialog
+        
+        guide = UserGuideDialog(self.props.active_window)
+        guide.present()
 
 
 def main():

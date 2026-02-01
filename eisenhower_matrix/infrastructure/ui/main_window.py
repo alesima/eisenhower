@@ -10,6 +10,7 @@ from eisenhower_matrix.infrastructure.ui.observer_adapter import GtkObserverAdap
 from eisenhower_matrix.infrastructure.ui.quadrant_panel import QuadrantPanel
 from eisenhower_matrix.infrastructure.ui.task_dialog import TaskDialog
 from eisenhower_matrix.infrastructure.ui.project_dialog import ProjectSelectorDialog
+from eisenhower_matrix.infrastructure.ui.user_guide_dialog import UserGuideDialog
 
 
 class MainWindow(Adw.ApplicationWindow):
@@ -85,6 +86,7 @@ class MainWindow(Adw.ApplicationWindow):
         import_menu.append("Import Calendar (iCal)...", "app.import-calendar")
         menu.append_submenu("Import", import_menu)
         
+        menu.append("User Guide", "app.user-guide")
         menu.append("Keyboard Shortcuts", "app.shortcuts")
         menu.append("About", "app.about")
         menu.append("Quit", "app.quit")

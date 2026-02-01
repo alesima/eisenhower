@@ -27,6 +27,7 @@ class ShortcutsWindow(Gtk.ShortcutsWindow):
         shortcuts = [
             ("<Ctrl>Q", "Quit application"),
             ("F1", "About Eisenhower Matrix"),
+            ("F2", "User Guide"),
             ("<Ctrl>T", "Toggle light/dark theme"),
             ("<Ctrl>H", "Show/hide completed tasks"),
         ]

@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-01-31
+
+### Added
+- **In-app User Guide**: Comprehensive guide accessible from menu or F2 keyboard shortcut
+- User guide covers:
+  - Understanding the Eisenhower Matrix methodology
+  - Detailed explanation of all four quadrants with examples
+  - Getting started guide (5-step process)
+  - Key app features and how to use them
+  - Best practices for effective task management
+  - Common mistakes to avoid
+  - Success indicators and measuring productivity
+- Expandable sections for easy navigation
+- Modern libadwaita design with proper scrolling and readability
+
+### Changed
+- **Application icon redesigned**: Modern 3D appearance following Flatpak standards
+  - Solid Nord color palette (no gradients)
+  - 3D depth effects with highlights and shadows
+  - Clear 2×2 grid representation of Eisenhower Matrix
+  - Quadrant colors: Red, Orange, Blue, Green
+  - Follows GNOME Human Interface Guidelines
+- Menu reorganized: User Guide added before Keyboard Shortcuts
+- Keyboard shortcuts: F2 opens User Guide, F1 opens About dialog
+
 ## [1.0.3] - 2026-01-31
 
 ### Added

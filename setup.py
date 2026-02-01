@@ -5,7 +5,6 @@ Setup script for Eisenhower Matrix application
 
 from setuptools import setup, find_packages
 from pathlib import Path
-import shutil
 
 # Read the README file
 this_directory = Path(__file__).parent
@@ -13,7 +12,7 @@ long_description = (this_directory / "README.md").read_text() if (this_directory
 
 setup(
     name="eisenhower-matrix",
-    version="1.0.3",
+    version="1.0.4",
     description="A GUI tool for task prioritization using the Eisenhower Matrix",
     long_description=long_description,
     long_description_content_type="text/markdown",
