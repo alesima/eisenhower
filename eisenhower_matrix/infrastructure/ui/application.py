@@ -66,14 +66,14 @@ class EisenhowerApp(Adw.Application):
             # Refresh the main window
             win = self.props.active_window
             if win:
-                win.on_matrix_changed()
+                win.refresh_panels_for_project()
                 win.update_window_title()
     
     def do_activate(self):
         """Activate the application"""
         win = self.props.active_window
         if not win:
-            win = MainWindow(self, self.service)
+            win = MainWindow(self)
         win.present()
     
     def do_startup(self):

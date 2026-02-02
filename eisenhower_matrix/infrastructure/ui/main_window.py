@@ -16,10 +16,10 @@ from eisenhower_matrix.infrastructure.ui.user_guide_dialog import UserGuideDialo
 class MainWindow(Adw.ApplicationWindow):
     """Main application window"""
     
-    def __init__(self, app, service: EisenhowerMatrixService):
+    def __init__(self, app):
         super().__init__(application=app)
-        self.service = service
-        self.service.add_observer(GtkObserverAdapter(self.on_matrix_changed))
+        self.app = app
+        self.app.service.add_observer(GtkObserverAdapter(self.on_matrix_changed))
         
         self.set_default_size(1200, 800)
         self.update_window_title()
@@ -130,7 +130,7 @@ class MainWindow(Adw.ApplicationWindow):
         
         for q in range(1, 5):
             panel = QuadrantPanel(
-                q, self.service,
+                q, self.app.service,
                 self.on_task_complete,
                 self.on_task_delete,
                 self.on_task_move,
@@ -351,21 +351,21 @@ class MainWindow(Adw.ApplicationWindow):
     def on_task_complete(self, quadrant: int, task_id: int, completed: bool):
         """Handle task completion toggle"""
         if completed:
-            self.service.complete_task(quadrant, task_id)
+            self.app.service.complete_task(quadrant, task_id)
         # Note: We don't support uncompleting in this version
     
     def on_task_delete(self, quadrant: int, task_id: int):
         """Handle task deletion"""
-        self.service.remove_task(quadrant, task_id)
+        self.app.service.remove_task(quadrant, task_id)
     
     def on_task_move(self, from_q: int, task_id: int, to_q: int):
         """Handle task move"""
-        self.service.move_task(from_q, task_id, to_q)
+        self.app.service.move_task(from_q, task_id, to_q)
     
     def on_task_edit(self, quadrant: int, task_id: int):
         """Handle task edit"""
         task = None
-        for t in self.service.get_tasks(quadrant):
+        for t in self.app.service.get_tasks(quadrant):
             if t.id == task_id:
                 task = t
                 break
@@ -374,10 +374,16 @@ class MainWindow(Adw.ApplicationWindow):
             return
         
         def on_save(description, notes, tags, metadata, due_date):
-            self.service.update_task(quadrant, task_id, description, notes, tags, metadata, due_date)
+            self.app.service.update_task(quadrant, task_id, description, notes, tags, metadata, due_date)
         
         dialog = TaskDialog(self, quadrant, task, on_save)
         dialog.present()    
     def on_task_reorder(self, quadrant: int, task_id: int, direction: str):
         """Handle task reordering"""
-        self.service.reorder_task(quadrant, task_id, direction)
+        self.app.service.reorder_task(quadrant, task_id, direction)
+    
+    def refresh_panels_for_project(self):
+        """Refresh all panels to use the new service after project switch"""
+        for q, panel in self.panels.items():
+            panel.service = self.app.service
+            panel.refresh()
