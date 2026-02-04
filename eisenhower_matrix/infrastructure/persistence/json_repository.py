@@ -170,13 +170,15 @@ class JsonTaskRepository(ITaskRepository):
             data['due_date'] = None
         
         return Task(
-            id=data['id'],
-            description=data['description'],
-            created=data['created'],
-            completed=data['completed'],
+            id=data.get('id', 0),
+            description=data.get('description', ''),
+            created=data.get('created', ''),
+            completed=data.get('completed', False),
             completed_at=data.get('completed_at'),
-            notes=data['notes'],
-            tags=data['tags'],
-            metadata=data['metadata'],
-            due_date=data['due_date']
+            archived=data.get('archived', False),
+            archived_at=data.get('archived_at'),
+            notes=data.get('notes', ''),
+            tags=data.get('tags', []),
+            metadata=data.get('metadata', {}),
+            due_date=data.get('due_date')
         )

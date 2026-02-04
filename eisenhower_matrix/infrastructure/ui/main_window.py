@@ -19,13 +19,19 @@ class MainWindow(Adw.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app)
         self.app = app
-        self.app.service.add_observer(GtkObserverAdapter(self.on_matrix_changed))
+        
+        # Create observer adapter and attach to service
+        self.observer_adapter = GtkObserverAdapter(self.on_matrix_changed)
+        self.app.service.add_observer(self.observer_adapter)
         
         self.set_default_size(1200, 800)
         self.update_window_title()
         
         # State for showing completed tasks
         self.show_completed = False
+        
+        # State for showing archived tasks
+        self.show_archived = False
         
         # State for search
         self.search_text = ""
@@ -63,6 +69,15 @@ class MainWindow(Adw.ApplicationWindow):
         completed_button.connect('toggled', self._on_show_completed_toggled)
         header.pack_start(completed_button)
         self.completed_button = completed_button
+        
+        # Show archived tasks toggle button
+        archived_button = Gtk.ToggleButton()
+        archived_button.set_icon_name('package-x-generic-symbolic')
+        archived_button.set_tooltip_text('Show archived tasks')
+        archived_button.set_active(self.show_archived)
+        archived_button.connect('toggled', self._on_show_archived_toggled)
+        header.pack_start(archived_button)
+        self.archived_button = archived_button
         
         # Menu button
         menu_button = Gtk.MenuButton()
@@ -135,7 +150,8 @@ class MainWindow(Adw.ApplicationWindow):
                 self.on_task_delete,
                 self.on_task_move,
                 self.on_task_edit,
-                self.on_task_reorder
+                self.on_task_reorder,
+                self.on_task_archive
             )
             panel.set_show_completed(self.show_completed)
             self.panels[q] = panel
@@ -170,6 +186,12 @@ class MainWindow(Adw.ApplicationWindow):
         completed_action.connect("activate", lambda *args: self.completed_button.set_active(not self.completed_button.get_active()))
         self.add_action(completed_action)
         app.set_accels_for_action("win.toggle-completed", ["<Ctrl>H"])
+        
+        # Show/hide archived tasks: Ctrl+A
+        archived_action = Gio.SimpleAction.new("toggle-archived", None)
+        archived_action.connect("activate", lambda *args: self.archived_button.set_active(not self.archived_button.get_active()))
+        self.add_action(archived_action)
+        app.set_accels_for_action("win.toggle-archived", ["<Ctrl>A"])
         
         # Focus quadrants: Ctrl+1, Ctrl+2, Ctrl+3, Ctrl+4
         for q in range(1, 5):
@@ -288,6 +310,17 @@ class MainWindow(Adw.ApplicationWindow):
             color: @warning_color;
             font-weight: 600;
         }
+        
+        /* Drag and drop styles */
+        .task-row.dragging {
+            opacity: 0.5;
+        }
+        
+        .task-row.drop-target {
+            background: alpha(@accent_color, 0.3);
+            border: 2px solid @accent_color;
+            border-radius: 6px;
+        }
         """
         css_provider.load_from_data(css.encode())
         Gtk.StyleContext.add_provider_for_display(
@@ -343,6 +376,27 @@ class MainWindow(Adw.ApplicationWindow):
             panel.set_show_completed(self.show_completed)
             panel.refresh()
     
+    def _on_show_archived_toggled(self, button):
+        """Toggle showing archived tasks"""
+        self.show_archived = button.get_active()
+        
+        # When showing archived tasks, also show completed tasks (since archived tasks are completed)
+        if self.show_archived and not self.show_completed:
+            self.show_completed = True
+            self.completed_button.set_active(True)
+        
+        # Update tooltip
+        if self.show_archived:
+            button.set_tooltip_text('Hide archived tasks')
+        else:
+            button.set_tooltip_text('Show archived tasks')
+        
+        # Refresh all panels
+        for panel in self.panels.values():
+            panel.set_show_archived(self.show_archived)
+            panel.set_show_completed(self.show_completed)
+            panel.refresh()
+    
     def on_matrix_changed(self):
         """Handle matrix data changes"""
         for panel in self.panels.values():
@@ -352,7 +406,15 @@ class MainWindow(Adw.ApplicationWindow):
         """Handle task completion toggle"""
         if completed:
             self.app.service.complete_task(quadrant, task_id)
-        # Note: We don't support uncompleting in this version
+        else:
+            self.app.service.uncomplete_task(quadrant, task_id)
+    
+    def on_task_archive(self, quadrant: int, task_id: int, archived: bool):
+        """Handle task archive toggle"""
+        if archived:
+            self.app.service.archive_task(quadrant, task_id)
+        else:
+            self.app.service.unarchive_task(quadrant, task_id)
     
     def on_task_delete(self, quadrant: int, task_id: int):
         """Handle task deletion"""
@@ -378,12 +440,21 @@ class MainWindow(Adw.ApplicationWindow):
         
         dialog = TaskDialog(self, quadrant, task, on_save)
         dialog.present()    
-    def on_task_reorder(self, quadrant: int, task_id: int, direction: str):
+    def on_task_reorder(self, quadrant: int, task_id: int, direction: str, target_task_id: int = None):
         """Handle task reordering"""
-        self.app.service.reorder_task(quadrant, task_id, direction)
+        if direction in ['up', 'down']:
+            # Legacy up/down button support
+            self.app.service.reorder_task(quadrant, task_id, direction)
+        elif direction in ['before', 'after'] and target_task_id is not None:
+            # Drag and drop support
+            self.app.service.reorder_task_relative(quadrant, task_id, direction, target_task_id)
     
     def refresh_panels_for_project(self):
         """Refresh all panels to use the new service after project switch"""
+        # Re-attach observer to new service
+        self.app.service.add_observer(self.observer_adapter)
+        
+        # Update panels with new service
         for q, panel in self.panels.items():
             panel.service = self.app.service
             panel.refresh()

@@ -147,10 +147,10 @@ class JsonProjectRepository(IProjectRepository):
     def _dict_to_project(self, data: dict) -> Project:
         """Convert dictionary to Project entity"""
         return Project(
-            id=data['id'],
-            name=data['name'],
+            id=data.get('id', ''),
+            name=data.get('name', ''),
             description=data.get('description', ''),
-            created=data['created'],
+            created=data.get('created', ''),
             last_accessed=data.get('last_accessed')
         )
     

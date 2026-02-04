@@ -30,6 +30,7 @@ class ShortcutsWindow(Gtk.ShortcutsWindow):
             ("F2", "User Guide"),
             ("<Ctrl>T", "Toggle light/dark theme"),
             ("<Ctrl>H", "Show/hide completed tasks"),
+            ("<Ctrl>A", "Show/hide archived tasks"),
         ]
         
         for accel, title in shortcuts:

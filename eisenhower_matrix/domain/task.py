@@ -18,6 +18,8 @@ class Task:
     created: str
     completed: bool = False
     completed_at: Optional[str] = None
+    archived: bool = False
+    archived_at: Optional[str] = None
     notes: str = ""
     tags: List[str] = field(default_factory=list)
     metadata: Dict[str, str] = field(default_factory=dict)
@@ -63,6 +65,36 @@ class Task:
         if not self.completed:
             self.completed = True
             self.completed_at = datetime.now().isoformat()
+    
+    def mark_uncompleted(self) -> None:
+        """
+        Domain behavior: Mark task as not completed
+        
+        Single Responsibility: Un-completion logic
+        """
+        if self.completed:
+            self.completed = False
+            self.completed_at = None
+    
+    def archive(self) -> None:
+        """
+        Domain behavior: Archive task
+        
+        Single Responsibility: Archive logic
+        """
+        if not self.archived:
+            self.archived = True
+            self.archived_at = datetime.now().isoformat()
+    
+    def unarchive(self) -> None:
+        """
+        Domain behavior: Unarchive task
+        
+        Single Responsibility: Unarchive logic
+        """
+        if self.archived:
+            self.archived = False
+            self.archived_at = None
     
     def update_details(self, description: Optional[str] = None,
                       notes: Optional[str] = None,

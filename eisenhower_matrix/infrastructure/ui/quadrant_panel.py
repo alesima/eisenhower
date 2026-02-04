@@ -19,7 +19,7 @@ class QuadrantPanel(Gtk.Box):
     Depends on domain service abstraction
     """
     
-    def __init__(self, quadrant: int, service: EisenhowerMatrixService, on_complete, on_delete, on_move, on_edit, on_reorder):
+    def __init__(self, quadrant: int, service: EisenhowerMatrixService, on_complete, on_delete, on_move, on_edit, on_reorder, on_archive):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.quadrant = quadrant
         self.service = service
@@ -28,7 +28,9 @@ class QuadrantPanel(Gtk.Box):
         self.on_move = on_move
         self.on_edit = on_edit
         self.on_reorder = on_reorder
+        self.on_archive = on_archive
         self.show_completed = False
+        self.show_archived = False
         self.search_text = ""
         
         info = QuadrantInfo.get_info(quadrant)
@@ -97,6 +99,10 @@ class QuadrantPanel(Gtk.Box):
         """Set whether to show completed tasks"""
         self.show_completed = show
     
+    def set_show_archived(self, show: bool):
+        """Set whether to show archived tasks"""
+        self.show_archived = show
+    
     def set_search_text(self, text: str):
         """Set search filter text"""
         self.search_text = text
@@ -119,9 +125,20 @@ class QuadrantPanel(Gtk.Box):
         else:
             tasks = [t for t in all_tasks if not t.completed]
         
+        # Filter tasks based on show_archived setting
+        if self.show_archived:
+            # When showing archived, only show archived tasks
+            tasks = [t for t in tasks if t.archived]
+        else:
+            # When not showing archived, exclude archived tasks
+            tasks = [t for t in tasks if not t.archived]
+        
         # Apply search filter
         if self.search_text:
             tasks = [t for t in tasks if t.matches_search(self.search_text)]
+        
+        # Sort tasks: uncompleted tasks always above completed tasks
+        tasks.sort(key=lambda t: (t.completed, t.id))
         
         if not tasks:
             empty_label = Gtk.Label(label="No tasks")
@@ -131,7 +148,7 @@ class QuadrantPanel(Gtk.Box):
             self.task_list.append(empty_label)
         else:
             for task in tasks:
-                task_row = TaskRow(task, self.quadrant, self.on_complete, self.on_delete, self.on_move, self.on_edit, self.on_reorder)
+                task_row = TaskRow(task, self.quadrant, self.on_complete, self.on_delete, self.on_move, self.on_edit, self.on_reorder, self.on_archive)
                 self.task_list.append(task_row)
                 
                 # Add separator

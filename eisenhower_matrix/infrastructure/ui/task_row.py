@@ -3,7 +3,7 @@
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk, Gio, Gdk
 
 from eisenhower_matrix.domain import Task, QuadrantInfo
 
@@ -15,7 +15,7 @@ class TaskRow(Gtk.Box):
     Single Responsibility: Display a single task with actions
     """
     
-    def __init__(self, task: Task, quadrant: int, on_complete, on_delete, on_move, on_edit, on_reorder):
+    def __init__(self, task: Task, quadrant: int, on_complete, on_delete, on_move, on_edit, on_reorder, on_archive):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.task = task
         self.quadrant = quadrant
@@ -24,6 +24,7 @@ class TaskRow(Gtk.Box):
         self.on_move = on_move
         self.on_edit = on_edit
         self.on_reorder = on_reorder
+        self.on_archive = on_archive
         
         self.set_margin_start(12)
         self.set_margin_end(12)
@@ -113,20 +114,6 @@ class TaskRow(Gtk.Box):
         # Action buttons
         button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         
-        # Reorder up button
-        up_button = Gtk.Button()
-        up_button.set_icon_name('go-up-symbolic')
-        up_button.set_tooltip_text('Move task up')
-        up_button.connect('clicked', self._on_reorder_up_clicked)
-        button_box.append(up_button)
-        
-        # Reorder down button
-        down_button = Gtk.Button()
-        down_button.set_icon_name('go-down-symbolic')
-        down_button.set_tooltip_text('Move task down')
-        down_button.connect('clicked', self._on_reorder_down_clicked)
-        button_box.append(down_button)
-        
         # Edit button
         edit_button = Gtk.Button()
         edit_button.set_icon_name('document-edit-symbolic')
@@ -158,6 +145,18 @@ class TaskRow(Gtk.Box):
             move_button.set_menu_model(menu)
         button_box.append(move_button)
         
+        # Archive button - only show for completed tasks
+        if task.completed:
+            archive_button = Gtk.Button()
+            if task.archived:
+                archive_button.set_icon_name('mail-unread-symbolic')
+                archive_button.set_tooltip_text('Unarchive task')
+            else:
+                archive_button.set_icon_name('package-x-generic-symbolic')
+                archive_button.set_tooltip_text('Archive task')
+            archive_button.connect('clicked', self._on_archive_clicked)
+            button_box.append(archive_button)
+        
         # Delete button
         delete_button = Gtk.Button()
         delete_button.set_icon_name('user-trash-symbolic')
@@ -171,6 +170,99 @@ class TaskRow(Gtk.Box):
         
         # Add CSS class
         self.add_css_class('task-row')
+        
+        # Set up drag and drop
+        self._setup_drag_and_drop()
+    
+    def _setup_drag_and_drop(self):
+        """Set up drag and drop functionality"""
+        # Create drag source
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.MOVE)
+        
+        # Set drag data
+        drag_data = f"{self.quadrant}:{self.task.id}"
+        drag_source.connect('prepare', lambda source, x, y: self._on_drag_prepare(source, drag_data))
+        drag_source.connect('drag-begin', self._on_drag_begin)
+        drag_source.connect('drag-end', self._on_drag_end)
+        
+        # Add drag source to the main row
+        main_row = self.get_first_child()
+        main_row.add_controller(drag_source)
+        
+        # Create drop target
+        drop_target = Gtk.DropTarget()
+        drop_target.set_gtypes([str])
+        drop_target.set_actions(Gdk.DragAction.MOVE)
+        drop_target.connect('drop', self._on_drop)
+        drop_target.connect('enter', self._on_drop_enter)
+        drop_target.connect('leave', self._on_drop_leave)
+        
+        # Add drop target to the main row
+        main_row.add_controller(drop_target)
+    
+    def _on_drag_prepare(self, source, drag_data):
+        """Prepare drag data"""
+        content = Gdk.ContentProvider.new_for_value(drag_data)
+        return content
+    
+    def _on_drag_begin(self, source):
+        """Handle drag begin"""
+        # Create a snapshot for drag icon
+        snapshot = Gtk.Snapshot()
+        self.snapshot(snapshot, 0, 0)
+        paintable = snapshot.to_paintable(None)
+        source.set_icon(paintable, 0, 0)
+        
+        # Add dragging class for visual feedback
+        self.add_css_class('dragging')
+    
+    def _on_drag_end(self, source, drag, delete_data):
+        """Handle drag end"""
+        self.remove_css_class('dragging')
+    
+    def _on_drop_enter(self, target, x, y):
+        """Handle drop enter"""
+        self.add_css_class('drop-target')
+        return Gdk.DragAction.MOVE
+    
+    def _on_drop_leave(self, target):
+        """Handle drop leave"""
+        self.remove_css_class('drop-target')
+    
+    def _on_drop(self, target, value, x, y):
+        """Handle drop"""
+        self.remove_css_class('drop-target')
+        
+        if not value:
+            return False
+        
+        try:
+            from_quadrant, from_task_id = value.split(':')
+            from_quadrant = int(from_quadrant)
+            from_task_id = int(from_task_id)
+            
+            # If dropping on the same task, do nothing
+            if from_quadrant == self.quadrant and from_task_id == self.task.id:
+                return False
+            
+            # If same quadrant, reorder
+            if from_quadrant == self.quadrant:
+                # Determine if we should place before or after based on y position
+                height = self.get_height()
+                if y < height / 2:
+                    # Drop before this task
+                    self.on_reorder(from_quadrant, from_task_id, 'before', self.task.id)
+                else:
+                    # Drop after this task
+                    self.on_reorder(from_quadrant, from_task_id, 'after', self.task.id)
+            else:
+                # Different quadrant - move task
+                self.on_move(from_quadrant, from_task_id, self.quadrant)
+            
+            return True
+        except (ValueError, AttributeError):
+            return False
     
     def _on_check_toggled(self, check):
         """Handle checkbox toggle"""
@@ -184,10 +276,6 @@ class TaskRow(Gtk.Box):
         """Handle delete button click"""
         self.on_delete(self.quadrant, self.task.id)
     
-    def _on_reorder_up_clicked(self, button):
-        """Handle reorder up button click"""
-        self.on_reorder(self.quadrant, self.task.id, 'up')
-    
-    def _on_reorder_down_clicked(self, button):
-        """Handle reorder down button click"""
-        self.on_reorder(self.quadrant, self.task.id, 'down')
+    def _on_archive_clicked(self, button):
+        """Handle archive button click"""
+        self.on_archive(self.quadrant, self.task.id, not self.task.archived)

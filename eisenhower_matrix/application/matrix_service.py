@@ -138,6 +138,63 @@ class EisenhowerMatrixService:
         
         return False
     
+    def uncomplete_task(self, quadrant: int, task_id: int) -> bool:
+        """
+        Mark task as not completed
+        
+        Returns:
+            True if task was found and uncompleted, False otherwise
+        """
+        if not QuadrantInfo.validate_quadrant(quadrant):
+            raise ValueError(f"Invalid quadrant: {quadrant}")
+        
+        for task in self._tasks[quadrant]:
+            if task.id == task_id:
+                task.mark_uncompleted()
+                self._repository.save(self._tasks)
+                self._notify_observers()
+                return True
+        
+        return False
+    
+    def archive_task(self, quadrant: int, task_id: int) -> bool:
+        """
+        Archive task
+        
+        Returns:
+            True if task was found and archived, False otherwise
+        """
+        if not QuadrantInfo.validate_quadrant(quadrant):
+            raise ValueError(f"Invalid quadrant: {quadrant}")
+        
+        for task in self._tasks[quadrant]:
+            if task.id == task_id:
+                task.archive()
+                self._repository.save(self._tasks)
+                self._notify_observers()
+                return True
+        
+        return False
+    
+    def unarchive_task(self, quadrant: int, task_id: int) -> bool:
+        """
+        Unarchive task
+        
+        Returns:
+            True if task was found and unarchived, False otherwise
+        """
+        if not QuadrantInfo.validate_quadrant(quadrant):
+            raise ValueError(f"Invalid quadrant: {quadrant}")
+        
+        for task in self._tasks[quadrant]:
+            if task.id == task_id:
+                task.unarchive()
+                self._repository.save(self._tasks)
+                self._notify_observers()
+                return True
+        
+        return False
+    
     def remove_task(self, quadrant: int, task_id: int) -> bool:
         """
         Remove a task from quadrant
@@ -238,6 +295,58 @@ class EisenhowerMatrixService:
             tasks[task_index], tasks[task_index + 1] = tasks[task_index + 1], tasks[task_index]
         else:
             return False
+        
+        self._repository.save(self._tasks)
+        self._notify_observers()
+        return True
+    
+    def reorder_task_relative(self, quadrant: int, task_id: int, position: str, target_task_id: int) -> bool:
+        """
+        Reorder a task relative to another task (for drag and drop)
+        
+        Args:
+            quadrant: Quadrant number (1-4)
+            task_id: Task ID to reorder
+            position: 'before' or 'after' the target task
+            target_task_id: Task ID to position relative to
+            
+        Returns:
+            True if task was reordered, False if not found
+        """
+        if not QuadrantInfo.validate_quadrant(quadrant):
+            raise ValueError(f"Invalid quadrant: {quadrant}")
+        
+        tasks = self._tasks[quadrant]
+        
+        # Find task and target indices
+        task_index = None
+        target_index = None
+        
+        for i, task in enumerate(tasks):
+            if task.id == task_id:
+                task_index = i
+            if task.id == target_task_id:
+                target_index = i
+        
+        if task_index is None or target_index is None:
+            return False
+        
+        # Remove task from current position
+        task = tasks.pop(task_index)
+        
+        # Insert at new position
+        if position == 'before':
+            insert_index = target_index
+        elif position == 'after':
+            insert_index = target_index + 1
+        else:
+            return False
+        
+        # Adjust insert index if we removed from before the target
+        if task_index < target_index:
+            insert_index -= 1
+        
+        tasks.insert(insert_index, task)
         
         self._repository.save(self._tasks)
         self._notify_observers()
