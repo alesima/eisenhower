@@ -14,6 +14,6 @@ pkgbase = eisenhower-matrix
 	depends = gtk4
 	depends = libadwaita
 	source = eisenhower-matrix-1.1.0.tar.gz::https://github.com/alesima/eisenhower/archive/v1.1.0.tar.gz
-	sha256sums = SKIP
+	sha256sums = b42836f3e0be9def0c9177c7c83babcc6a70fb66e5f987209e874a5cfcd91305
 
 pkgname = eisenhower-matrix
