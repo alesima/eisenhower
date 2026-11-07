@@ -1,72 +1,62 @@
-# AUR Package Submission Guide
+# AUR Submission Runbook
 
-This guide explains how to submit the Eisenhower Matrix package to the Arch User Repository (AUR).
+> Estado: pacote validado localmente com `makepkg -s` (1.1.0-1 constrói limpo,
+> checksum fixado, desktop/metainfo/ícone/licença nos caminhos corretos).
+> Falta apenas o push para `aur.archlinux.org`, que exige conta no AUR + chave
+> SSH — o push **precisa ser feito por você** (este ambiente não tem sua chave).
 
-## Prerequisites
+## Pré-requisitos (só na primeira vez)
 
-1. Create an AUR account at https://aur.archlinux.org/
-2. Set up SSH keys for AUR access
-
-## Submission Steps
-
-1. **Create the AUR package directory:**
+1. Criar conta em https://aur.archlinux.org/register
+2. Gerar chave SSH e cadastrar em https://aur.archlinux.org/account:
    ```bash
-   mkdir -p ~/aur/eisenhower-matrix
-   cd ~/aur/eisenhower-matrix
+   ssh-keygen -t ed25519 -C "aur@alesima" -f ~/.ssh/aur
+   # adicionar ~/.ssh/aur.pub no perfil do AUR
    ```
-
-2. **Copy the package files:**
-   ```bash
-   cp /path/to/eisenhower/PKGBUILD .
-   cp /path/to/eisenhower/.SRCINFO .
-   cp /path/to/eisenhower/README-AUR.md .
    ```
-
-3. **Initialize git repository:**
-   ```bash
-   git init
-   git add PKGBUILD .SRCINFO README-AUR.md
-   git commit -m "Initial commit"
+   # ~/.ssh/config
+   Host aur.archlinux.org
+     IdentityFile ~/.ssh/aur
+     User aur
    ```
+3. Testar: `ssh aur@aur.archlinux.org help` (deve listar comandos, não negar).
 
-4. **Submit to AUR:**
-   ```bash
-   # Clone AUR repo (replace YOUR_USERNAME)
-   git clone ssh://aur@aur.archlinux.org/eisenhower-matrix.git
-   cd eisenhower-matrix
-
-   # Copy files
-   cp ~/aur/eisenhower-matrix/* .
-
-   # Commit and push
-   git add .
-   git commit -m "Initial submission of eisenhower-matrix"
-   git push origin master
-   ```
-
-## Updating the Package
-
-When releasing a new version:
-
-1. Update `pkgver` in PKGBUILD
-2. Update `.SRCINFO` with `makepkg --printsrcinfo > .SRCINFO`
-3. Update `sha256sums` if using a release tarball
-4. Commit and push changes
-
-## Testing
-
-Before submitting, test the package locally:
+## Primeira submissão
 
 ```bash
-# Build and install
-makepkg -si
-
-# Test the application
-eisenhower-gui
+git clone ssh://aur@aur.archlinux.org/eisenhower-matrix.git ~/aur/eisenhower-matrix
+cd ~/aur/eisenhower-matrix
+cp /home/alex/Projects/Personal/eisenhower/PKGBUILD .
+cp /home/alex/Projects/Personal/eisenhower/.SRCINFO .
+git add PKGBUILD .SRCINFO
+git commit -m "Initial submission of eisenhower-matrix 1.1.0"
+git push origin master
 ```
 
-## Notes
+Depois do push, o pacote aparece em
+https://aur.archlinux.org/packages/eisenhower-matrix e instala via:
 
-- The package uses `sha256sums=('SKIP')` for development. For production, calculate proper checksums.
-- Ensure all dependencies are correctly specified.
-- Test on a clean system to verify the package works.
+```bash
+yay -S eisenhower-matrix
+```
+
+(não existe "publicar no yay": o yay é só um helper que instala do AUR.)
+
+## Atualizações
+
+```bash
+cd /home/alex/Projects/Personal/eisenhower
+# 1. bump pkgver no PKGBUILD (e pkgrel=1)
+# 2. novo sha256: makepkg -g >> PKGBUILD (ou curl + sha256sum)
+makepkg --printsrcinfo > .SRCINFO
+cp PKGBUILD .SRCINFO ~/aur/eisenhower-matrix/
+cd ~/aur/eisenhower-matrix
+git commit -am "Update to 1.2.0" && git push origin master
+```
+
+## Validação local (já feita para 1.1.0)
+
+```bash
+mkdir /tmp/aurtest && cp PKGBUILD /tmp/aurtest/ && cd /tmp/aurtest
+makepkg -s --noconfirm   # compila sem instalar
+```
