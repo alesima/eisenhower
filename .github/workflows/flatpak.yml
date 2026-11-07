@@ -83,6 +83,8 @@ jobs:
           bundle: eisenhower-matrix.flatpak
           manifest-path: io.github.alesima.eisenhower.yml
           cache-key: flatpak-builder-${{ github.sha }}
+          # Same mirroring Flathub infra performs; required for repo lint
+          mirror-screenshots-url: https://dl.flathub.org/media
 
       - name: Lint manifest and build
         run: |

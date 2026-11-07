@@ -75,7 +75,7 @@ Each task can include:
 ### Flatpak (Recommended)
 
 Once approved on Flathub, the app is also available in GNOME Software
-(the "loja" on GNOME-based distros) — just search for "Eisenhower Matrix".
+on GNOME-based distros — just search for "Eisenhower Matrix".
 
 #### From Flathub
 
