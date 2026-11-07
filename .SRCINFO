@@ -1,6 +1,6 @@
 pkgbase = eisenhower-matrix
 	pkgdesc = A GUI tool for task prioritization using the Eisenhower Matrix
-	pkgver = 1.1.0
+	pkgver = 1.1.1
 	pkgrel = 1
 	url = https://github.com/alesima/eisenhower
 	arch = any
@@ -13,7 +13,7 @@ pkgbase = eisenhower-matrix
 	depends = python-gobject
 	depends = gtk4
 	depends = libadwaita
-	source = eisenhower-matrix-1.1.0.tar.gz::https://github.com/alesima/eisenhower/archive/v1.1.0.tar.gz
-	sha256sums = b42836f3e0be9def0c9177c7c83babcc6a70fb66e5f987209e874a5cfcd91305
+	source = eisenhower-matrix-1.1.1.tar.gz::https://github.com/alesima/eisenhower/archive/v1.1.1.tar.gz
+	sha256sums = 9d56a3750d06ca4e4569993fddf24b0f1492e05ab101214d32a33a1bb60c5139
 
 pkgname = eisenhower-matrix

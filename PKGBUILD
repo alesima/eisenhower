@@ -19,7 +19,7 @@ makedepends=(
     'python-wheel'
 )
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
-sha256sums=('b42836f3e0be9def0c9177c7c83babcc6a70fb66e5f987209e874a5cfcd91305')
+sha256sums=('9d56a3750d06ca4e4569993fddf24b0f1492e05ab101214d32a33a1bb60c5139')
 
 build() {
     cd "eisenhower-$pkgver"
