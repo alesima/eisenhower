@@ -5,7 +5,7 @@ A modern GUI application for managing tasks using the Eisenhower Matrix method o
 ![GTK4](https://img.shields.io/badge/GTK-4-blue)
 ![Python](https://img.shields.io/badge/Python-3.9+-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-[![Flathub](https://img.shields.io/badge/Download%20on-Flathub-4A90E2?logo=flathub&logoColor=white)](https://flathub.org/apps/com.github.alesima.eisenhower)
+[![Flathub](https://img.shields.io/badge/Download%20on-Flathub-4A90E2?logo=flathub&logoColor=white)](https://flathub.org/apps/io.github.alesima.eisenhower)
 
 ## What is the Eisenhower Matrix?
 
@@ -61,6 +61,9 @@ The GTK4 interface provides a clean, modern view of your tasks organized in four
 - 🔵 **Quadrant 3** (Urgent, Not Important) - Blue accent
 - 🟢 **Quadrant 4** (Not Urgent, Not Important) - Green accent
 
+![Main window](screenshots/main-window.png)
+![Add task dialog](screenshots/add-task.png)
+
 Each task can include:
 - **Description** - The main task title
 - **Notes** - Additional details and context
@@ -71,13 +74,16 @@ Each task can include:
 
 ### Flatpak (Recommended)
 
+Once approved on Flathub, the app is also available in GNOME Software
+(the "loja" on GNOME-based distros) — just search for "Eisenhower Matrix".
+
 #### From Flathub
 
 Once approved on Flathub:
 
 ```bash
-flatpak install flathub com.github.alesima.eisenhower
-flatpak run com.github.alesima.eisenhower
+flatpak install flathub io.github.alesima.eisenhower
+flatpak run io.github.alesima.eisenhower
 ```
 
 #### From Release Bundle
@@ -86,7 +92,7 @@ Download the `.flatpak` bundle from [GitHub Releases](https://github.com/alesima
 
 ```bash
 flatpak install eisenhower-matrix.flatpak
-flatpak run com.github.alesima.eisenhower
+flatpak run io.github.alesima.eisenhower
 ```
 
 #### Build from Source
@@ -101,7 +107,7 @@ sudo pacman -S flatpak-builder    # Arch/EndeavourOS
 ./build-flatpak.sh
 
 # Run
-flatpak run com.github.alesima.eisenhower
+flatpak run io.github.alesima.eisenhower
 ```
 
 ### From Source
@@ -224,9 +230,9 @@ eisenhower/
 │   └── __init__.py           # Package initialization
 ├── data/
 │   └── icons/                # Application icons
-├── com.github.alesima.eisenhower.yml         # Flatpak manifest
-├── com.github.alesima.eisenhower.desktop     # Desktop entry
-├── com.github.alesima.eisenhower.metainfo.xml # AppData metadata
+├── io.github.alesima.eisenhower.yml         # Flatpak manifest
+├── io.github.alesima.eisenhower.desktop     # Desktop entry
+├── io.github.alesima.eisenhower.metainfo.xml # AppData metadata
 ├── eisenhower-gui            # GUI entry point script
 ├── setup.py                  # Installation script
 ├── build-flatpak.sh          # Flatpak build script
@@ -323,13 +329,13 @@ python -m eisenhower_matrix.gui
 
 ```bash
 # Build
-flatpak-builder --user --install --force-clean build-dir com.github.alesima.eisenhower.yml
+flatpak-builder --user --install --force-clean build-dir io.github.alesima.eisenhower.yml
 
 # Run
-flatpak run com.github.alesima.eisenhower
+flatpak run io.github.alesima.eisenhower
 
 # Uninstall
-flatpak uninstall --user com.github.alesima.eisenhower
+flatpak uninstall --user io.github.alesima.eisenhower
 ```
 
 ## Contributing
@@ -350,48 +356,6 @@ pip install -e ".[dev]"
 ```
 
 ## Tips for Effective Use
-eisenhower add 1 "Deploy hotfix for API issue"
-eisenhower add 1 "Prepare presentation for 2pm meeting"
-
-# Add important long-term tasks
-eisenhower add 2 "Research new framework for next project"
-eisenhower add 2 "Schedule team 1-on-1s"
-
-# Mark tasks as complete
-eisenhower complete 1 1
-
-# Re-prioritize a task that became urgent
-eisenhower move 2 3 1
-
-# View updated matrix
-eisenhower
-```
-
-### Sample Output
-
-```
-╔════════════════════════════════════════════════════════╗
-║         EISENHOWER MATRIX - Task Prioritization       ║
-╚════════════════════════════════════════════════════════╝
-
-URGENT                                   │                              NOT URGENT
-─────────────────────────────────────────────────────────────────────────────────
-Q1: Urgent & Important                   │ Q2: Important, Not Urgent              
-(Do First)                               │                             (Schedule)
-
-  ○ [1] Fix production bug               │   ○ [1] Plan Q1 strategy
-  ○ [2] Deploy hotfix                    │   ○ [2] Update documentation
-
-─────────────────────────────────────────────────────────────────────────────────
-Q3: Urgent, Not Important                │ Q4: Not Urgent, Not Important          
-(Delegate)                               │                            (Eliminate)
-
-  ○ [1] Reply to emails                  │   (no tasks)
-
-Data file: /home/<user>/.local/share/eisenhower/tasks.json
-```
-
-## Tips for Effective Use
 
 1. **Review daily** - Start each day by reviewing your matrix
 2. **Focus on Q2** - Most important work happens here (prevention vs. firefighting)
@@ -400,8 +364,6 @@ Data file: /home/<user>/.local/share/eisenhower/tasks.json
 5. **Use metadata** - Add context, tags, and notes to remember why tasks matter
 6. **Complete regularly** - Mark tasks done to maintain a clean view
 7. **Export backups** - Use the backup feature regularly to preserve your work
-
-See [FEATURES.md](FEATURES.md) for detailed information on using metadata and tags.
 
 ## Flatpak Permissions
 

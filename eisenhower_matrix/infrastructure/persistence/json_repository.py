@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 from typing import Dict, List
 from eisenhower_matrix.domain import ITaskRepository, Task
+from eisenhower_matrix.infrastructure.persistence.paths import resolve_data_file
 
 
 class JsonTaskRepository(ITaskRepository):
@@ -28,10 +29,8 @@ class JsonTaskRepository(ITaskRepository):
             project_id: Project identifier for multi-project support
         """
         if data_file is None:
-            data_dir = Path.home() / ".local" / "share" / "eisenhower"
-            data_dir.mkdir(parents=True, exist_ok=True)
-            # Use project-specific file name
-            self.data_file = data_dir / f"tasks_{project_id}.json"
+            # XDG-aware location (Flatpak-safe); migrates legacy files.
+            self.data_file = resolve_data_file(f"tasks_{project_id}.json")
         else:
             self.data_file = Path(data_file)
     

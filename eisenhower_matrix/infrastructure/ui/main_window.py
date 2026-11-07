@@ -103,6 +103,7 @@ class MainWindow(Adw.ApplicationWindow):
         
         menu.append("User Guide", "app.user-guide")
         menu.append("Keyboard Shortcuts", "app.shortcuts")
+        menu.append("Donate", "app.donate")
         menu.append("About", "app.about")
         menu.append("Quit", "app.quit")
         

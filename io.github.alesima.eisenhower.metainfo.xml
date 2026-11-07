@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2026 Alex Silva -->
+<component type="desktop-application">
+  <id>io.github.alesima.eisenhower</id>
+
+  <name>Eisenhower Matrix</name>
+  <summary>Organize tasks by urgency and importance</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <developer id="io.github.alesima">
+    <name>Alex Silva</name>
+  </developer>
+
+  <description>
+    <p>
+      Eisenhower Matrix is a task prioritization tool that helps you organize your work
+      by categorizing tasks into four quadrants based on their urgency and importance.
+    </p>
+    <p>
+      Named after President Dwight D. Eisenhower, this productivity method helps you focus
+      on what truly matters by distinguishing between tasks that are:
+    </p>
+    <ul>
+      <li>Urgent &amp; Important (Do First) - Critical tasks requiring immediate attention</li>
+      <li>Important, Not Urgent (Schedule) - Long-term goals and strategic planning</li>
+      <li>Urgent, Not Important (Delegate) - Tasks that can be delegated to others</li>
+      <li>Not Urgent, Not Important (Eliminate) - Time-wasters to minimize</li>
+    </ul>
+    <p>Features:</p>
+    <ul>
+      <li>Modern GTK4 interface with libadwaita styling and light/dark theme</li>
+      <li>Multiple projects, each with its own four-quadrant matrix</li>
+      <li>Rich task metadata: notes, tags, due dates with urgency indicators</li>
+      <li>Real-time search across all quadrants</li>
+      <li>Import and export: JSON, CSV, Markdown, calendar (iCal/ICS)</li>
+      <li>Keyboard shortcuts for common actions</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.github.alesima.eisenhower.desktop</launchable>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main window showing the four-quadrant matrix</caption>
+      <image>https://raw.githubusercontent.com/alesima/eisenhower/v1.1.0/screenshots/main-window.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Add-task dialog with notes, tags and due date</caption>
+      <image>https://raw.githubusercontent.com/alesima/eisenhower/v1.1.0/screenshots/add-task.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://github.com/alesima/eisenhower</url>
+  <url type="bugtracker">https://github.com/alesima/eisenhower/issues</url>
+  <url type="vcs-browser">https://github.com/alesima/eisenhower</url>
+  <url type="donation">https://ko-fi.com/alesima</url>
+
+  <releases>
+    <release version="1.1.0" date="2026-11-07">
+      <url type="details">https://github.com/alesima/eisenhower/releases/tag/v1.1.0</url>
+      <description>
+        <p>Flathub-ready release</p>
+        <ul>
+          <li>Application ID migrated to io.github.alesima.eisenhower</li>
+          <li>XDG-aware data storage with legacy data migration</li>
+          <li>Sandbox-safe donation link and minimal Flatpak permissions</li>
+          <li>Desktop-only device metadata and updated screenshots</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.0.4" date="2026-01-31">
+      <url type="details">https://github.com/alesima/eisenhower/releases/tag/v1.0.4</url>
+      <description>
+        <p>Minor improvements</p>
+        <ul>
+          <li>GTK4 interface with libadwaita styling</li>
+          <li>Four-quadrant task organization</li>
+          <li>Task management features (add, complete, move, delete)</li>
+          <li>Notes, tags, and metadata support</li>
+          <li>Persistent JSON storage</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+  <content_rating type="oars-1.1" />
+
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#5E81AC</color>
+    <color type="primary" scheme_preference="dark">#81A1C1</color>
+  </branding>
+</component>

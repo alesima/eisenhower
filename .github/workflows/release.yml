@@ -31,7 +31,7 @@ jobs:
           Download the `.flatpak` bundle from assets below and install:
           ```bash
           flatpak install eisenhower-matrix.flatpak
-          flatpak run com.github.alesima.eisenhower
+          flatpak run io.github.alesima.eisenhower
           ```
           
           #### From Source
@@ -76,7 +76,7 @@ jobs:
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           bundle: eisenhower-matrix.flatpak
-          manifest-path: com.github.alesima.eisenhower.yml
+          manifest-path: io.github.alesima.eisenhower.yml
           cache-key: flatpak-builder-release-${{ github.sha }}
       
       - name: Upload to Release

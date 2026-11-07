@@ -8,6 +8,10 @@ import json
 from pathlib import Path
 from typing import List, Optional
 from eisenhower_matrix.domain import IProjectRepository, Project
+from eisenhower_matrix.infrastructure.persistence.paths import (
+    default_data_dir,
+    resolve_data_file,
+)
 
 
 class JsonProjectRepository(IProjectRepository):
@@ -26,9 +30,8 @@ class JsonProjectRepository(IProjectRepository):
             data_file: Path to JSON file. Defaults to standard location.
         """
         if data_file is None:
-            data_dir = Path.home() / ".local" / "share" / "eisenhower"
-            data_dir.mkdir(parents=True, exist_ok=True)
-            self.data_file = data_dir / "projects.json"
+            # XDG-aware location (Flatpak-safe); migrates legacy files.
+            self.data_file = resolve_data_file("projects.json")
         else:
             self.data_file = Path(data_file)
         
@@ -156,10 +159,16 @@ class JsonProjectRepository(IProjectRepository):
     
     def _delete_project_tasks(self, project_id: str) -> None:
         """Delete the tasks file for a project"""
-        data_dir = Path.home() / ".local" / "share" / "eisenhower"
-        tasks_file = data_dir / f"tasks_{project_id}.json"
+        tasks_file = default_data_dir() / f"tasks_{project_id}.json"
         if tasks_file.exists():
             try:
                 tasks_file.unlink()
             except IOError as e:
                 print(f"Error deleting project tasks: {e}")
+        # Also clean up the pre-1.1 legacy location if present
+        legacy = Path.home() / ".local" / "share" / "eisenhower" / f"tasks_{project_id}.json"
+        if legacy != tasks_file and legacy.exists():
+            try:
+                legacy.unlink()
+            except IOError as e:
+                print(f"Error deleting legacy project tasks: {e}")

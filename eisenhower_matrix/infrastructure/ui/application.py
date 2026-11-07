@@ -24,7 +24,7 @@ class EisenhowerApp(Adw.Application):
     
     def __init__(self):
         super().__init__(
-            application_id='com.github.alesima.eisenhower',
+            application_id='io.github.alesima.eisenhower',
             flags=Gio.ApplicationFlags.FLAGS_NONE
         )
         # Dependency Injection: Create infrastructure and domain services
@@ -92,6 +92,10 @@ class EisenhowerApp(Adw.Application):
         user_guide_action = Gio.SimpleAction.new("user-guide", None)
         user_guide_action.connect("activate", self.on_user_guide)
         self.add_action(user_guide_action)
+        
+        donate_action = Gio.SimpleAction.new("donate", None)
+        donate_action.connect("activate", self.on_donate)
+        self.add_action(donate_action)
         
         export_action = Gio.SimpleAction.new("export", None)
         export_action.connect("activate", self.on_export)
@@ -493,9 +497,9 @@ class EisenhowerApp(Adw.Application):
         about = Adw.AboutWindow(
             transient_for=self.props.active_window,
             application_name="Eisenhower Matrix",
-            application_icon="com.github.alesima.eisenhower",
+            application_icon="io.github.alesima.eisenhower",
             developer_name="Alex Silva",
-            version="1.0.4",
+            version="1.1.0",
             developers=["Alex Silva"],
             copyright="© 2026 Alex Silva",
             license_type=Gtk.License.MIT_X11,
@@ -517,6 +521,10 @@ class EisenhowerApp(Adw.Application):
         
         guide = UserGuideDialog(self.props.active_window)
         guide.present()
+    
+    def on_donate(self, action, param):
+        """Open Ko-fi donation page via the default browser (portal-safe)."""
+        Gtk.show_uri(self.props.active_window, "https://ko-fi.com/alesima", 0)
 
 
 def main():

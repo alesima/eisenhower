@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-07
+
+### Changed
+- **Application ID migrated**: `com.github.alesima.eisenhower` → `io.github.alesima.eisenhower`
+  (Flathub requires the `io.github.*` prefix for GitHub-hosted projects).
+  Flatpak data moves to the new app directory; task files are auto-migrated
+  from the legacy `~/.local/share/eisenhower` location when needed.
+- Data storage is now XDG-aware (`GLib.get_user_data_dir()`), matching the
+  `xdg-data/eisenhower` Flatpak permission.
+- "Donate" menu action now opens the browser via the desktop portal instead
+  of `webbrowser.open()`, which does not work inside the sandbox.
+- Desktop entry uses a single main category (`Office;ProjectManagement;`).
+- Flatpak runtime updated to GNOME 51; manifest builds from the `v1.1.0` git
+  tag with no bundled network fetches and installs license files.
+
+### Added
+- AppStream screenshots, donation/bugtracker/source URLs, brand colors and
+  desktop-only device metadata in the metainfo file.
+- Test suite (`tests/`, 23 tests): domain entities, matrix service,
+  JSON persistence incl. legacy migration, and import/export round-trips.
+- CI now runs pytest (blocking), desktop-file validation, AppStream
+  validation and `flatpak-builder-lint` on the manifest and build.
+
 ## [1.0.4] - 2026-01-31
 
 ### Added
