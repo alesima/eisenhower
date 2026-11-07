@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-07
+
+### Fixed
+- CI test job no longer builds PyGObject: `eisenhower_matrix` and
+  `eisenhower_matrix.infrastructure` package inits no longer import the
+  GTK UI layer, so the test suite runs in headless environments.
+- Removed the unnecessary `xdg-data/eisenhower` Flatpak permission
+  (flagged by `flatpak-builder-lint`); task data lives in the
+  sandbox-private data directory.
+- Fixed AUR build: source directory is `eisenhower-$pkgver` and the
+  release tarball checksum is pinned instead of `SKIP`.
+
 ## [1.1.0] - 2026-11-07
 
 ### Changed
@@ -19,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Donate" menu action now opens the browser via the desktop portal instead
   of `webbrowser.open()`, which does not work inside the sandbox.
 - Desktop entry uses a single main category (`Office;ProjectManagement;`).
-- Flatpak runtime updated to GNOME 51; manifest builds from the `v1.1.0` git
+- Flatpak runtime updated to GNOME 51; manifest builds from the `v1.1.1` git
   tag with no bundled network fetches and installs license files.
 
 ### Added

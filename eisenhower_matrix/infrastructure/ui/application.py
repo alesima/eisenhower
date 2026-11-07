@@ -499,7 +499,7 @@ class EisenhowerApp(Adw.Application):
             application_name="Eisenhower Matrix",
             application_icon="io.github.alesima.eisenhower",
             developer_name="Alex Silva",
-            version="1.1.0",
+            version="1.1.1",
             developers=["Alex Silva"],
             copyright="© 2026 Alex Silva",
             license_type=Gtk.License.MIT_X11,

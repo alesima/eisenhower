@@ -1,6 +1,6 @@
 # Maintainer: Alex Silva <contact@alesima.com>
 pkgname=eisenhower-matrix
-pkgver=1.1.0
+pkgver=1.1.1
 pkgrel=1
 pkgdesc="A GUI tool for task prioritization using the Eisenhower Matrix"
 arch=('any')

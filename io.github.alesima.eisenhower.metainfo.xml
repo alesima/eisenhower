@@ -44,11 +44,11 @@
   <screenshots>
     <screenshot type="default">
       <caption>Main window showing the four-quadrant matrix</caption>
-      <image>https://raw.githubusercontent.com/alesima/eisenhower/v1.1.0/screenshots/main-window.png</image>
+      <image>https://raw.githubusercontent.com/alesima/eisenhower/v1.1.1/screenshots/main-window.png</image>
     </screenshot>
     <screenshot>
       <caption>Add-task dialog with notes, tags and due date</caption>
-      <image>https://raw.githubusercontent.com/alesima/eisenhower/v1.1.0/screenshots/add-task.png</image>
+      <image>https://raw.githubusercontent.com/alesima/eisenhower/v1.1.1/screenshots/add-task.png</image>
     </screenshot>
   </screenshots>
 
@@ -58,8 +58,8 @@
   <url type="donation">https://ko-fi.com/alesima</url>
 
   <releases>
-    <release version="1.1.0" date="2026-11-07">
-      <url type="details">https://github.com/alesima/eisenhower/releases/tag/v1.1.0</url>
+    <release version="1.1.1" date="2026-11-07">
+      <url type="details">https://github.com/alesima/eisenhower/releases/tag/v1.1.1</url>
       <description>
         <p>Flathub-ready release</p>
         <ul>
