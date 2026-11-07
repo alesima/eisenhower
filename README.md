@@ -371,7 +371,9 @@ The application requires minimal permissions:
 - **Wayland/X11 socket**: Display the window
 - **IPC**: Inter-process communication
 - **DRI device**: Hardware acceleration
-- **xdg-data/eisenhower**: Store task data
+
+Task data lives in the sandbox-private data directory, so no filesystem
+permission is needed. Import/export uses the file-chooser portal.
 
 ## Troubleshooting
 

@@ -9,7 +9,7 @@ Hexagonal Architecture (Ports and Adapters):
 SOLID Principles applied throughout.
 """
 
-__version__ = "1.0.4"
+__version__ = "1.1.0"
 __author__ = "Alex Silva"
 
 # Export domain abstractions
@@ -28,8 +28,11 @@ from eisenhower_matrix.application import (
     TaskImportUseCase
 )
 
-# Export infrastructure implementations
-from eisenhower_matrix.infrastructure import JsonTaskRepository, EisenhowerApp, MainWindow
+# NOTE: infrastructure (persistence/UI) is intentionally NOT imported here.
+# The UI layer requires GTK/libadwaita (gi), which is unavailable in
+# headless environments such as CI test runners. Import it explicitly:
+#   from eisenhower_matrix.infrastructure import JsonTaskRepository, ...
+#   from eisenhower_matrix.infrastructure.ui import EisenhowerApp, ...
 
 __all__ = [
     'Task',
@@ -37,9 +40,6 @@ __all__ = [
     'ITaskRepository',
     'IObserver',
     'EisenhowerMatrixService',
-    'JsonTaskRepository',
-    'EisenhowerApp',
-    'MainWindow',
     'TaskManagementUseCase',
     'TaskExportUseCase',
     'TaskImportUseCase',

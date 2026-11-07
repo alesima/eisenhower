@@ -8,7 +8,6 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --device=dri
-  - --filesystem=xdg-data/eisenhower:create
 cleanup:
   - /include
   - /lib/pkgconfig
