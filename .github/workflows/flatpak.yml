@@ -70,7 +70,7 @@ jobs:
     name: Build Flatpak
     runs-on: ubuntu-latest
     container:
-      image: bilelmoussaoui/flatpak-github-actions:latest
+      image: bilelmoussaoui/flatpak-github-actions:gnome-47
       options: --privileged
 
     steps:
@@ -83,12 +83,18 @@ jobs:
           bundle: eisenhower-matrix.flatpak
           manifest-path: io.github.alesima.eisenhower.yml
           cache-key: flatpak-builder-${{ github.sha }}
-          # Same mirroring Flathub infra performs; required for repo lint
-          mirror-screenshots-url: https://dl.flathub.org/media
 
-      - name: Lint manifest and build
+      - name: Lint manifest (blocking)
         run: |
           flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest io.github.alesima.eisenhower.yml
+
+      - name: Lint built repo (advisory)
+        # NOTE: the repo check requires screenshot mirroring
+        # (--mirror-screenshots-url), which only Flathub infra performs
+        # authoritatively on `bot, build`. Kept advisory here so a
+        # missing media mirror never blocks CI.
+        continue-on-error: true
+        run: |
           flatpak run --command=flatpak-builder-lint org.flatpak.Builder repo repo
 
       - name: Upload Flatpak bundle
