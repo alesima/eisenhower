@@ -9,6 +9,8 @@ jobs:
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code
@@ -64,6 +66,8 @@ jobs:
     name: Build and Upload Flatpak
     needs: create-release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-47
       options: --privileged
