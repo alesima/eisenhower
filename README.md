@@ -110,6 +110,14 @@ sudo pacman -S flatpak-builder    # Arch/EndeavourOS
 flatpak run io.github.alesima.eisenhower
 ```
 
+### Arch Linux (AUR)
+
+Once published on the AUR:
+
+```bash
+yay -S eisenhower-matrix
+```
+
 ### From Source
 
 #### System Dependencies
