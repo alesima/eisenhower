@@ -27,6 +27,7 @@ modules:
       - type: git
         url: https://github.com/alesima/eisenhower.git
         tag: v1.1.0
+        commit: 48223e637461c02d7f1b5b5f33cdb7d62bf97924
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
